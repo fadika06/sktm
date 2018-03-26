@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Bantenprov\Sktm\Facades\SktmFacade;
 
 /* Models */
-use Bantenprov\Sktm\Models\Bantenprov\Sktm\Sktm;
 use Bantenprov\Sktm\Models\Bantenprov\Sktm\MasterSktm;
 use App\User;
 
@@ -21,20 +20,18 @@ use Validator;
  * @package Bantenprov\Sktm
  * @author  bantenprov <developer.bantenprov@gmail.com>
  */
-class SktmController extends Controller
+class MasterSktmController extends Controller
 {
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    protected $sktm;
     protected $master_sktm;
     protected $user;
 
-    public function __construct(Sktm $sktm, MasterSktm $master_sktm, User $user)
+    public function __construct(MasterSktm $master_sktm, User $user)
     {
-        $this->sktm = $sktm;
         $this->master_sktm = $master_sktm;
         $this->user = $user;
     }
@@ -49,25 +46,21 @@ class SktmController extends Controller
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
 
-            $query = $this->sktm->orderBy($sortCol, $sortDir);
+            $query = $this->master_sktm->orderBy($sortCol, $sortDir);
         } else {
-            $query = $this->sktm->orderBy('id', 'asc');
+            $query = $this->master_sktm->orderBy('id', 'asc');
         }
 
         if ($request->exists('filter')) {
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
-                $q->where('nomor_un', 'like', $value)
-                    ->orWhere('nama_lomba', 'like', $value);
+                $q->where('nilai', 'like', $value)
+                    ->orWhere('bobot', 'like', $value);
             });
         }
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
         $response = $query->paginate($perPage);
-
-        foreach($response as $master_sktm){
-            array_set($response->data, 'master_sktm', $master_sktm->master_sktm->juara);
-        }
 
         foreach($response as $user){
             array_set($response->data, 'user', $user->user->name);
@@ -87,17 +80,11 @@ class SktmController extends Controller
     public function create()
     {
         $users = $this->user->all();
-        $master_sktms = $this->master_sktm->all();
 
         foreach($users as $user){
             array_set($user, 'label', $user->name);
         }
-
-        foreach($master_sktms as $master_sktm){
-            array_set($master_sktm, 'label', $master_sktm->juara);
-        }
         
-        $response['master_sktm'] = $master_sktms;
         $response['user'] = $users;
         $response['status'] = true;
 
@@ -112,35 +99,38 @@ class SktmController extends Controller
      */
     public function store(Request $request)
     {
-        $sktm = $this->sktm;
+        $master_sktm = $this->master_sktm;
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|unique:sktms,user_id',
-            'master_sktm_id' => 'required',
-            'nomor_un' => 'required',
-            'nama_lomba' => 'required|max:255',
+            'juara' => 'required|max:255',
+            'tingkat' => 'required|max:255',
+            'nilai' => 'required',
+            'bobot' => 'required',
         ]);
 
         if($validator->fails()){
-            $check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
+            $check = $master_sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
                 $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
             } else {
-                $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
-                $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
-                $sktm->save();
+                $master_sktm->user_id = $request->input('user_id');
+                $master_sktm->juara = $request->input('juara');
+                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nilai = $request->input('nilai');
+                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
-                $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
-                $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
-                $sktm->save();
+                $master_sktm->user_id = $request->input('user_id');
+                $master_sktm->juara = $request->input('juara');
+                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nilai = $request->input('nilai');
+                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->save();
 
             $response['message'] = 'success';
         }
@@ -158,11 +148,10 @@ class SktmController extends Controller
      */
     public function show($id)
     {
-        $sktm = $this->sktm->findOrFail($id);
+        $master_sktm = $this->master_sktm->findOrFail($id);
         
-        $response['user'] = $sktm->user;
-        $response['master_sktm'] = $sktm->master_sktm;
-        $response['sktm'] = $sktm;
+        $response['user'] = $master_sktm->user;
+        $response['master_sktm'] = $master_sktm;
         $response['status'] = true;
 
         return response()->json($response);
@@ -177,14 +166,11 @@ class SktmController extends Controller
 
     public function edit($id)
     {
-        $sktm = $this->sktm->findOrFail($id);
+        $master_sktm = $this->master_sktm->findOrFail($id);
 
-        array_set($sktm->user, 'label', $sktm->user->name);
-        array_set($sktm->master_sktm, 'label', $sktm->master_sktm->juara);
-        
-        $response['master_sktm'] = $sktm->master_sktm;
-        $response['sktm'] = $sktm;
-        $response['user'] = $sktm->user;
+        array_set($master_sktm->user, 'label', $master_sktm->user->name);
+        $response['master_sktm'] = $master_sktm;
+        $response['user'] = $master_sktm->user;
         $response['status'] = true;
 
         return response()->json($response);
@@ -199,46 +185,50 @@ class SktmController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $sktm = $this->sktm->findOrFail($id);
+        $master_sktm = $this->master_sktm->findOrFail($id);
 
-        if ($request->input('master_sktm_id') == $request->input('master_sktm_id'))
+        if ($request->input('juara') == $request->input('juara'))
         {
             $validator = Validator::make($request->all(), [
                 'user_id' => 'required',
-                'master_sktm_id' => 'required',
-                'nomor_un' => 'required',
-                'nama_lomba' => 'required|max:255',
+                'juara' => 'required|max:255',
+                'tingkat' => 'required|max:255',
+                'nilai' => 'required',
+                'bobot' => 'required',
                 
             ]);
         } else {
             $validator = Validator::make($request->all(), [
                 'user_id' => 'required',
-                'master_sktm_id' => 'required',
-                'nomor_un' => 'required',
-                'nama_lomba' => 'required|max:255',
+                'juara' => 'required|max:255',
+                'tingkat' => 'required|max:255',
+                'nilai' => 'required',
+                'bobot' => 'required',
             ]);
         }
 
         if ($validator->fails()) {
-            $check = $sktm->where('master_sktm_id',$request->master_sktm_id)->whereNull('deleted_at')->count();
+            $check = $master_sktm->where('user_id',$request->user)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, master_sktm_id ' . $request->master_sktm_id . ' already exists';
+                $response['message'] = 'Failed, user_id ' . $request->user . ' already exists';
             } else {
-                $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
-                $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
-                $sktm->save();
+                $master_sktm->user_id = $request->input('user_id');
+                $master_sktm->juara = $request->input('juara');
+                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nilai = $request->input('nilai');
+                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
-                $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
-                $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
-                $sktm->save();
+                $master_sktm->user_id = $request->input('user_id');
+                $master_sktm->juara = $request->input('juara');
+                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nilai = $request->input('nilai');
+                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->save();
 
             $response['message'] = 'success';
         }
@@ -256,9 +246,9 @@ class SktmController extends Controller
      */
     public function destroy($id)
     {
-        $sktm = $this->sktm->findOrFail($id);
+        $master_sktm = $this->master_sktm->findOrFail($id);
 
-        if ($sktm->delete()) {
+        if ($master_sktm->delete()) {
             $response['status'] = true;
         } else {
             $response['status'] = false;

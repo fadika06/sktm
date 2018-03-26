@@ -71,6 +71,7 @@ $ composer dump-autoload
 
 ```bash
 $ php artisan db:seed --class=BantenprovSktmSeeder
+
 ```
 
 #### Lakukan publish component vue :
@@ -98,7 +99,18 @@ $ php artisan vendor:publish --tag=sktm-public
         meta: {
             title: "Sktm"
         }
-      }
+      },
+       {
+        path: '/dashboard/master-sktm',
+        components: {
+            main: resolve => require(['./components/views/bantenprov/sktm/master-sktm/DashboardMasterSktm.vue'], resolve),
+            navbar: resolve => require(['./components/Navbar.vue'], resolve),
+            sidebar: resolve => require(['./components/Sidebar.vue'], resolve)
+        },
+        meta: {
+            title: "Master Sktm"
+        }
+      },
         //== ...
     ]
 },
@@ -155,6 +167,51 @@ $ php artisan vendor:publish --tag=sktm-public
                 title: "Sktm"
             }
         },
+
+        {
+            path: '/admin/master-sktm',
+            components: {
+                main: resolve => require(['./components/bantenprov/sktm/master-sktm/MasterSktm.index.vue'], resolve),
+                navbar: resolve => require(['./components/Navbar.vue'], resolve),
+                sidebar: resolve => require(['./components/Sidebar.vue'], resolve)
+            },
+            meta: {
+                title: "Master Sktm"
+            }
+        },
+        {
+            path: '/admin/master-sktm/create',
+            components: {
+                main: resolve => require(['./components/bantenprov/sktm/master-sktm/MasterSktm.add.vue'], resolve),
+                navbar: resolve => require(['./components/Navbar.vue'], resolve),
+                sidebar: resolve => require(['./components/Sidebar.vue'], resolve)
+            },
+            meta: {
+                title: "Add Master Sktm"
+            }
+        },
+        {
+            path: '/admin/master-sktm/:id',
+            components: {
+                main: resolve => require(['./components/bantenprov/sktm/master-sktm/MasterSktm.show.vue'], resolve),
+                navbar: resolve => require(['./components/Navbar.vue'], resolve),
+                sidebar: resolve => require(['./components/Sidebar.vue'], resolve)
+            },
+            meta: {
+                title: "Show Master Sktm"
+            }
+        },
+        {
+            path: '/admin/master-sktm/:id/edit',
+            components: {
+                main: resolve => require(['./components/bantenprov/sktm/master-sktm/MasterSktm.edit.vue'], resolve),
+                navbar: resolve => require(['./components/Navbar.vue'], resolve),
+                sidebar: resolve => require(['./components/Sidebar.vue'], resolve)
+            },
+            meta: {
+                title: "Edit Master Sktm"
+            }
+        },
         //== ...
     ]
 },
@@ -172,7 +229,13 @@ $ php artisan vendor:publish --tag=sktm-public
           name: 'Sktm',
           link: '/dashboard/sktm',
           icon: 'fa fa-angle-double-right'
-      }
+      },
+
+      {
+          name: 'Master Sktm',
+          link: '/dashboard/master-sktm',
+          icon: 'fa fa-angle-double-right'
+      },
         //== ...
     ]
 },
@@ -189,7 +252,12 @@ $ php artisan vendor:publish --tag=sktm-public
             name: 'Sktm',
             link: '/admin/sktm',
             icon: 'fa fa-angle-double-right'
-          }
+          },
+          {
+          name: 'Master Sktm',
+          link: '/admin/master-sktm',
+          icon: 'fa fa-angle-double-right'
+      },
         //== ...
     ]
 },

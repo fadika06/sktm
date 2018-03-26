@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Edit Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Edit Master Sktm
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -32,25 +32,12 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-            <label for="master_sktm">Master Sktm</label>
-            <v-select name="master_sktm" v-model="model.master_sktm" :options="master_sktm" class="mb-4"></v-select>
+              <label for="model-juara">Juara</label>
+              <input class="form-control" v-model="model.juara" required autofocus name="juara" type="text" placeholder="Juara">
 
-            <field-messages name="master_sktm" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Master Sktm is a required field</small>
-            </field-messages>
-            </validate>
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-              <input class="form-control" v-model="model.nomor_un" required autofocus name="nomor_un" type="text" placeholder="Nomor UN">
-
-              <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="juara" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Nomor UN is a required field</small>
+                <small class="form-text text-danger" slot="required">Juara is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -59,11 +46,40 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <input class="form-control" v-model="model.nama_lomba" required autofocus name="nama_lomba" type="text" placeholder="Nama Lomba">
+              <label for="model-tingkat">Tingkat</label>
+              <input class="form-control" v-model="model.tingkat" required autofocus name="tingkat" type="text" placeholder="Tingkat">
 
-              <field-messages name="nama_lomba" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="tingkat" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Nama Lomba is a required field</small>
+                <small class="form-text text-danger" slot="required">Tingkat is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="model-nilai">Nilai</label>
+              <input class="form-control" v-model="model.nilai" required autofocus name="nilai" type="text" placeholder="Nilai">
+
+              <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">Nilai is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="model-bobot">Bobot</label>
+              <input class="form-control" v-model="model.bobot" required autofocus name="bobot" type="text" placeholder="Bobot">
+
+              <field-messages name="bobot" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">Bobot is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -85,27 +101,25 @@
 <script>
 export default {
   mounted() {
-    axios.get('api/sktm/' + this.$route.params.id + '/edit')
+    axios.get('api/master-sktm/' + this.$route.params.id + '/edit')
       .then(response => {
         if (response.data.status == true) {
-          this.model.user = response.data.user,
-          this.model.master_sktm = response.data.master_sktm;
-          this.model.nomor_un = response.data.sktm.nomor_un;
-          this.model.nama_lomba = response.data.sktm.nama_lomba;
+          this.model.user = response.data.user;
+          this.model.juara = response.data.master_sktm.juara;
+          this.model.tingkat = response.data.master_sktm.tingkat;
+          this.model.nilai = response.data.master_sktm.nilai;
+          this.model.bobot = response.data.master_sktm.bobot;
         } else {
           alert('Failed');
         }
       })
       .catch(function(response) {
         alert('Break');
-        window.location.href = '#/admin/sktm';
+        window.location.href = '#/admin/master-sktm/';
       }),
 
-      axios.get('api/sktm/create')
+      axios.get('api/master-sktm/create')
       .then(response => {
-        response.data.master_sktm.forEach(element => {
-            this.master_sktm.push(element);
-          });
           response.data.user.forEach(user_element => {
             this.user.push(user_element);
           });
@@ -119,12 +133,12 @@ export default {
       state: {},
       model: {
         user: "",
-        master_sktm: "",
-        nomor_un: "",
-        nama_lomba: "",
+        juara: "",
+        tingkat: "",
+        nilai: "",
+        bobot: "",
       },
-      user: [],
-      master_sktm: []
+      user: []
     }
   },
   methods: {
@@ -134,11 +148,11 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.put('api/sktm/' + this.$route.params.id, {
-            user_id: this.model.user.id,
-            master_sktm_id: this.model.master_sktm.id,
-            nomor_un: this.model.nomor_un,
-            nama_lomba: this.model.nama_lomba
+        axios.put('api/master-sktm/' + this.$route.params.id, {
+            user_id: this.model.user.idj            juara: this.model.juara,
+            tingkat: this.model.tingkat,
+            nilai: this.model.nilai,
+            bobot: this.model.bobot
           })
           .then(response => {
             if (response.data.status == true) {
@@ -158,11 +172,13 @@ export default {
       }
     },
     reset() {
-      axios.get('api/sktm/' + this.$route.params.id + '/edit')
+      axios.get('api/master-sktm/' + this.$route.params.id + '/edit')
         .then(response => {
           if (response.data.status == true) {
-            this.model.nomor_un = response.data.sktm.nomor_un;
-            this.model.nama_lomba = response.data.sktm.nama_lomba;
+            this.model.juara = response.data.master_sktm.juara;
+            this.model.tingkat = response.data.master_sktm.tingkat;
+            this.model.nilai = response.data.master_sktm.nilai;
+            this.model.bobot = response.data.master_sktm.bobot;
           } else {
             alert('Failed');
           }
@@ -172,7 +188,7 @@ export default {
         });
     },
     back() {
-      window.location = '#/admin/sktm';
+      window.location = '#/admin/master-sktm/';
     }
   }
 }

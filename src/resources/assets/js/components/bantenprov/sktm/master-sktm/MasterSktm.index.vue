@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Master Sktm
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -26,7 +26,7 @@
 
       <div class="table-responsive">
         <vuetable ref="vuetable"
-          api-url="/api/sktm"
+          api-url="/api/master-sktm/"
           :fields="fields"
           :sort-order="sortOrder"
           :css="css.table"
@@ -98,21 +98,21 @@ export default {
           titleClass: 'center aligned'
         },
         {
-          name: 'master_sktm.juara',
-          title: 'Master Sktm',
-          sortField: 'master_sktm_id',
+          name: 'juara',
+          title: 'Juara',
+          sortField: 'juara',
           titleClass: 'center aligned'
         },
         {
-          name: 'nomor_un',
-          title: 'Nomor UN',
-          sortField: 'nomor_un',
+          name: 'nilai',
+          title: 'Nilai',
+          sortField: 'nilai',
           titleClass: 'center aligned'
         },
         {
-          name: 'nama_lomba',
-          title: 'Nama Lomba',
-          sortField: 'nama_lomba',
+          name: 'bobot',
+          title: 'Bobot',
+          sortField: 'bobot',
           titleClass: 'center aligned'
         },
         {
@@ -151,19 +151,19 @@ export default {
   },
   methods: {
     createRow() {
-      window.location = '#/admin/sktm/create';
+      window.location = '#/admin/master-sktm/create';
     },
     viewRow(rowData) {
-      window.location = '#/admin/sktm/' + rowData.id;
+      window.location = '#/admin/master-sktm/' + rowData.id;
     },
     editRow(rowData) {
-      window.location = '#/admin/sktm/' + rowData.id + '/edit';
+      window.location = '#/admin/master-sktm/' + rowData.id + '/edit';
     },
     deleteRow(rowData) {
       let app = this;
 
       if (confirm('Do you really want to delete it?')) {
-        axios.delete('/api/sktm/' + rowData.id)
+        axios.delete('/api/master-sktm/' + rowData.id)
           .then(function(response) {
             if (response.data.status == true) {
               app.$refs.vuetable.reload()

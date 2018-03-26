@@ -21,38 +21,30 @@ class BantenprovSktmSeederSktm extends Seeder
         $sktms = (object) [
             (object) [
                 'user_id' => '1',
-                'nomor_un' => '12345',
-                'kode_sktm' => '1',
-                'nama_suket' => 'Suket 1',
-                'instansi_suket' => 'Sktm 1',
-                'no_suket' => '1',
-                'nilai_sktm' => '1',
+                'master_sktm_id' => '1',
+                'nomor_un' => '1',
+                'nama_lomba' => 'Lomba 2'              
             ],
             (object) [
                 'user_id' => '2',
-                'nomor_un' => '123',
-                'kode_sktm' => '2',
-                'nama_suket' => 'Suket 2',
-                'instansi_suket' => 'Sktm 2',
-                'no_suket' => '2',
-                'nilai_sktm' => '2',
+                'master_sktm_id' => '2',
+                'nomor_un' => '2',
+                'nama_lomba' => 'Lomba 2'
             ]
         ];
 
         foreach ($sktms as $sktm) {
             $model = Sktm::updateOrCreate(
                 [
-                    'user_id' => $sktm->user_id,
-                    'nomor_un' => $sktm->nomor_un,
-                    'kode_sktm' => $sktm->kode_sktm,
-                    'nama_suket' => $sktm->nama_suket,
-                    'instansi_suket' => $sktm->instansi_suket,
-                    'no_suket' => $sktm->no_suket,
-                    'nilai_sktm' => $sktm->nilai_sktm,
-
+                   'user_id' => $sktm->user_id,
+                   'master_sktm_id' => $sktm->master_sktm_id,
+                   'nomor_un' => $sktm->nomor_un,
+                   'nama_lomba' => $sktm->nama_lomba,
                 ]
             );
             $model->save();
         }
 	}
 }
+
+

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Show Sktm 
+      <i class="fa fa-table" aria-hidden="true"></i> Show Master Sktm 
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -17,65 +17,59 @@
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Master Sktm :</b> {{ model.master_sktm.juara }}
+            <b>Username :</b> {{ model.user.name }}
           </div>
         </div>
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Nomor UN :</b> {{ model.nomor_un }}
+            <b>Juara :</b> {{ model.juara }}
           </div>
         </div>
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Nama Lomba :</b> {{ model.nama_lomba }}
+            <b>Tingkat :</b> {{ model.tingkat }}
           </div>
         </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <b>Nilai :</b> {{ model.nilai }}
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <b>Bobot :</b> {{ model.bobot }}
+          </div>
+        </div>
+
+        
         
       </vue-form>
     </div>
-
-    <div class="card-footer text-muted">
-        <div class="form-row mt-6">
-            <div class="col-md">
-              <b>Nama Lomba :</b> {{ model.nama_lomba }}
-            </div>
-          </div>
-          <div class="form-row mt-6">
-          <div class="form-row mt-12">
-            <div class="col-md">
-              Dibuat : {{ model.created_at }}
-            </div>
-          </div>
-          <div class="form-row mt-12">
-            <div class="col-md">
-              Diperbaiki : {{ model.updated_at }}
-            </div>
-          </div>
-        </div>
-    </div>
-
   </div>
 </template>
 
 <script>
 export default {
   mounted() {
-    axios.get('api/sktm/' + this.$route.params.id)
+    axios.get('api/master-sktm/' + this.$route.params.id)
       .then(response => {
         if (response.data.status == true) {
           this.model.user = response.data.user;
-          this.model.master_sktm = response.data.master_sktm;
-          this.model.nomor_un = response.data.sktm.nomor_un;
-          this.model.nama_lomba = response.data.sktm.nama_lomba;
+          this.model.juara = response.data.master_sktm.juara;
+          this.model.tingkat = response.data.master_sktm.tingkat;
+          this.model.nilai = response.data.master_sktm.nilai;
+          this.model.bobot = response.data.master_sktm.bobot;
         } else {
           alert('Failed');
         }
       })
       .catch(function(response) {
         alert('Break');
-        window.location.href = '#/admin/sktm';
+        window.location.href = '#/admin/master-sktm/';
       })
 
   },
@@ -84,12 +78,12 @@ export default {
       state: {},
       model: {
         user: "",
-        master_sktm: "",
-        nomor_un: "",
-        nama_lomba: "",
+        juara: "",
+        tingkat: "",
+        nilai: "",
+        bobot: "",
       },
-      user: [],
-      master_sktm: []
+      user: []
     }
   },
   methods: {
@@ -99,11 +93,11 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.put('api/sktm/' + this.$route.params.id, {
-            master_sktm_id: this.model.master_sktm.id,
-            nomor_un: this.model.nomor_un,
-            nama_lomba: this.model.old_label,
-            user_id: this.model.sktm.id
+        axios.put('api/master-sktm/' + this.$route.params.id, {
+            juara: this.model.juara,
+            nilai: this.model.nilai,
+            bobot: this.model.bobot,
+            user_id: this.model.master_sktm.id
           })
           .then(response => {
             if (response.data.status == true) {
@@ -123,7 +117,7 @@ export default {
       }
     },
     reset() {
-      axios.get('api/sktm/' + this.$route.params.id + '/edit')
+      axios.get('api/master-sktm/' + this.$route.params.id + '/edit')
         .then(response => {
           if (response.data.status == true) {
             this.model.label = response.data.sktm.label;
@@ -137,7 +131,7 @@ export default {
         });
     },
     back() {
-      window.location = '#/admin/sktm';
+      window.location = '#/admin/master-sktm/';
     }
   }
 }
