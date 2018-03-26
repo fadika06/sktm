@@ -41,7 +41,5 @@ Route::group(['prefix' => 'api/master-sktm', 'middleware' => ['web']], function(
     Route::get('/{id}/edit',    $controllers->edit)->name('master-sktm.edit');
     Route::put('/{id}',         $controllers->update)->name('master-sktm.update');
     Route::delete('/{id}',      $controllers->destroy)->name('master-sktm.destroy');
-
-    });
     
 });
