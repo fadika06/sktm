@@ -9,6 +9,7 @@ use Bantenprov\Sktm\Facades\SktmFacade;
 
 /* Models */
 use Bantenprov\Sktm\Models\Bantenprov\Sktm\Sktm;
+use App\User;
 
 /* Etc */
 use Validator;
@@ -26,9 +27,13 @@ class SktmController extends Controller
      *
      * @return void
      */
-    public function __construct(Sktm $sktm)
+    protected $user;
+    protected $sktm;
+
+    public function __construct(Sktm $sktm, User $user)
     {
         $this->sktm = $sktm;
+        $this->user = $user;
     }
 
     /**
@@ -49,13 +54,17 @@ class SktmController extends Controller
         if ($request->exists('filter')) {
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
-                $q->where('label', 'like', $value)
-                    ->orWhere('description', 'like', $value);
+                $q->where('nomor_un', 'like', $value)
+                    ->orWhere('kode_sktm', 'like', $value);
             });
         }
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
         $response = $query->paginate($perPage);
+
+        foreach($response as $user){
+            array_set($response->data, 'user', $user->user->name);
+        }
 
         return response()->json($response)
             ->header('Access-Control-Allow-Origin', '*')
@@ -70,8 +79,14 @@ class SktmController extends Controller
     public function create()
     {
         $sktm = $this->sktm;
+        $users = $this->user->all();
+
+        foreach($users as $user){
+            array_set($user, 'label', $user->name);
+        }
 
         $response['sktm'] = $sktm;
+        $response['user'] = $users;
         $response['status'] = true;
 
         return response()->json($sktm);
@@ -88,25 +103,40 @@ class SktmController extends Controller
         $sktm = $this->sktm;
 
         $validator = Validator::make($request->all(), [
-            'label' => 'required|max:16|unique:sktms,label',
-            'description' => 'max:255',
+            'user_id' => 'required|unique:sktms,user_id',
+            'nomor_un' => 'required',
+            'kode_sktm' => 'required',
+            'nama_suket' => 'required',
+            'instansi_suket' => 'required',
+            'no_suket' => 'required',
+            'nilai_sktm' => 'required',
         ]);
 
         if($validator->fails()){
-            $check = $sktm->where('label',$request->label)->whereNull('deleted_at')->count();
+            $check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, label ' . $request->label . ' already exists';
+                $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
             } else {
-                $sktm->label = $request->input('label');
-                $sktm->description = $request->input('description');
+                $sktm->user_id = $request->input('user_id');
+                $sktm->nomor_un = $request->input('nomor_un');
+                $sktm->kode_sktm = $request->input('kode_sktm');
+                $sktm->nama_suket = $request->input('nama_suket');
+                $sktm->instansi_suket = $request->input('instansi_suket');
+                $sktm->no_suket = $request->input('no_suket');
+                $sktm->nilai_sktm = $request->input('nilai_sktm');
                 $sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
-            $sktm->label = $request->input('label');
-            $sktm->description = $request->input('description');
+                $sktm->user_id = $request->input('user_id');
+                $sktm->nomor_un = $request->input('nomor_un');
+                $sktm->kode_sktm = $request->input('kode_sktm');
+                $sktm->nama_suket = $request->input('nama_suket');
+                $sktm->instansi_suket = $request->input('instansi_suket');
+                $sktm->no_suket = $request->input('no_suket');
+                $sktm->nilai_sktm = $request->input('nilai_sktm');
             $sktm->save();
 
             $response['message'] = 'success';
@@ -128,6 +158,7 @@ class SktmController extends Controller
         $sktm = $this->sktm->findOrFail($id);
 
         $response['sktm'] = $sktm;
+        $response['user'] = $sktm->user;
         $response['status'] = true;
 
         return response()->json($response);
@@ -143,7 +174,10 @@ class SktmController extends Controller
     {
         $sktm = $this->sktm->findOrFail($id);
 
+        array_set($sktm->user, 'label', $sktm->user->name);
+
         $response['sktm'] = $sktm;
+        $response['user'] = $sktm->user;
         $response['status'] = true;
 
         return response()->json($response);
@@ -160,34 +194,54 @@ class SktmController extends Controller
     {
         $sktm = $this->sktm->findOrFail($id);
 
-        if ($request->input('old_label') == $request->input('label'))
+        if ($request->input('user_id') == $request->input('user_id'))
         {
             $validator = Validator::make($request->all(), [
-                'label' => 'required|max:16',
-                'description' => 'max:255',
+                'user_id' => 'required|unique:sktms,user_id',
+                'nomor_un' => 'required',
+                'kode_sktm' => 'required',
+                'nama_suket' => 'required',
+                'instansi_suket' => 'required',
+                'no_suket' => 'required',
+                'nilai_sktm' => 'required',
             ]);
         } else {
             $validator = Validator::make($request->all(), [
-                'label' => 'required|max:16|unique:sktms,label',
-                'description' => 'max:255',
+                'user_id' => 'required|unique:sktms,user_id',
+                'nomor_un' => 'required',
+                'kode_sktm' => 'required',
+                'nama_suket' => 'required',
+                'instansi_suket' => 'required',
+                'no_suket' => 'required',
+                'nilai_sktm' => 'required',
             ]);
         }
 
         if ($validator->fails()) {
-            $check = $sktm->where('label',$request->label)->whereNull('deleted_at')->count();
+            $check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, label ' . $request->label . ' already exists';
+                $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
             } else {
-                $sktm->label = $request->input('label');
-                $sktm->description = $request->input('description');
+                $sktm->user_id = $request->input('user_id');
+                $sktm->nomor_un = $request->input('nomor_un');
+                $sktm->kode_sktm = $request->input('kode_sktm');
+                $sktm->nama_suket = $request->input('nama_suket');
+                $sktm->instansi_suket = $request->input('instansi_suket');
+                $sktm->no_suket = $request->input('no_suket');
+                $sktm->nilai_sktm = $request->input('nilai_sktm');
                 $sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
-            $sktm->label = $request->input('label');
-            $sktm->description = $request->input('description');
+                $sktm->user_id = $request->input('user_id');
+                $sktm->nomor_un = $request->input('nomor_un');
+                $sktm->kode_sktm = $request->input('kode_sktm');
+                $sktm->nama_suket = $request->input('nama_suket');
+                $sktm->instansi_suket = $request->input('instansi_suket');
+                $sktm->no_suket = $request->input('no_suket');
+                $sktm->nilai_sktm = $request->input('nilai_sktm');
             $sktm->save();
 
             $response['message'] = 'success';

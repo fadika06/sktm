@@ -16,7 +16,17 @@ class Sktm extends Model
         'deleted_at'
     ];
     protected $fillable = [
-        'label',
-        'description'
+        'user_id',
+        'nomor_un',
+        'kode_sktm',
+        'nama_suket',
+        'instansi_suket',
+        'no_suket',
+        'nilai_sktm'
     ];
+
+     public function user()
+    {
+        return $this->belongsTo('App\User','user_id');
+    }
 }
