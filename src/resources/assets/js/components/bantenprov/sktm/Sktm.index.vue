@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -92,15 +92,33 @@ export default {
           dataClass: 'right aligned'
         },
         {
-          name: 'label',
-          title: 'Label',
-          sortField: 'label',
+          name: 'nomor_un',
+          title: 'Nomor UN',
+          sortField: 'nomor_un',
           titleClass: 'center aligned'
         },
         {
-          name: 'description',
-          title: 'Description',
-          sortField: 'description',
+          name: 'kode_sktm',
+          title: 'Kode SKTM',
+          sortField: 'kode_sktm',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'nama_suket',
+          title: 'Nama Suket',
+          sortField: 'nama_suket',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'nilai_sktm',
+          title: 'Nilai SKTM',
+          sortField: 'nilai_sktm',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'user.name',
+          title: 'Username',
+          sortField: 'user_id',
           titleClass: 'center aligned'
         },
         {
@@ -111,7 +129,7 @@ export default {
         },
       ],
       sortOrder: [{
-        field: 'label',
+        field: 'id',
         direction: 'asc'
       }],
       moreParams: {},

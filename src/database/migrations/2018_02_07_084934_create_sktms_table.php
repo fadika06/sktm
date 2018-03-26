@@ -14,8 +14,13 @@ class CreateSktmsTable extends Migration
 	{
 		Schema::create('sktms', function(Blueprint $table) {
 			$table->increments('id');
-			$table->string('label', 255);
-			$table->string('description', 255)->nullable();
+			$table->integer('user_id');
+			$table->integer('nomor_un');
+			$table->integer('kode_sktm');
+			$table->string('nama_suket');
+			$table->string('instansi_suket');
+			$table->integer('no_suket');
+			$table->integer('nilai_sktm');
 			$table->timestamps();
 			$table->softDeletes();
 		});
