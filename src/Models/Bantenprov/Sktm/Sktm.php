@@ -19,7 +19,8 @@ class Sktm extends Model
         'user_id',
         'master_sktm_id',
         'nomor_un',
-        'nama_lomba'
+        'no_sktm',
+        'nilai'
     ];
 
     public function master_sktm()

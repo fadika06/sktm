@@ -1,12 +1,12 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
           <button class="btn btn-primary btn-sm" role="button" @click="createRow">
-            <i class="fa fa-plus" aria-hidden="true"></i>
+          	<i class="fa fa-plus" aria-hidden="true"></i>
           </button>
         </li>
       </ul>
@@ -92,27 +92,33 @@ export default {
           dataClass: 'right aligned'
         },
         {
-          name: 'user.name',
-          title: 'Username',
-          sortField: 'user_id',
-          titleClass: 'center aligned'
-        },
-        {
-          name: 'master_sktm.juara',
-          title: 'Master Sktm',
-          sortField: 'master_sktm_id',
-          titleClass: 'center aligned'
-        },
-        {
           name: 'nomor_un',
           title: 'Nomor UN',
           sortField: 'nomor_un',
           titleClass: 'center aligned'
         },
         {
-          name: 'nama_lomba',
-          title: 'Nama Lomba',
-          sortField: 'nama_lomba',
+          name: 'master_sktm.nama',
+          title: 'Master SKTM',
+          sortField: 'master_sktm_id',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'no_sktm',
+          title: 'Nomor SKTM',
+          sortField: 'no_sktm',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'nilai',
+          title: 'Nilai',
+          sortField: 'nilai',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'user.name',
+          title: 'Username',
+          sortField: 'user_id',
           titleClass: 'center aligned'
         },
         {

@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Add Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Add SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -23,7 +23,7 @@
 
             <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">username is a required field</small>
+              <small class="form-text text-danger" slot="required">Username is a required field</small>
             </field-messages>
             </validate>
           </div>
@@ -32,30 +32,46 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-            <label for="master_sktm">Master Sktm ID</label>
-            <v-select name="master_sktm" v-model="model.master_sktm" :options="master_sktm" class="mb-4"></v-select>
+            <label for="master_sktm_id">Master SKTM</label>
+            <v-select name="master_sktm_id" v-model="model.master_sktm" :options="master_sktm" class="mb-4"></v-select>
+
+            <field-messages name="master_sktm_id" show="$invalid && $submitted" class="text-danger">
+              <small class="form-text text-success">Looks good!</small>
+              <small class="form-text text-danger" slot="required">Master SKTM is a required field</small>
+            </field-messages>
             </validate>
           </div>
         </div>
 
-         <validate tag="div">
+    <validate tag="div">
           <div class="form-group">
             <label for="model-nomor_un">Nomor UN</label>
             <input type="text" class="form-control" id="model-nomor_un" v-model="model.nomor_un" name="nomor_un" placeholder="Nomor UN" required autofocus>
             <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">This field is a required field</small>
+              <small class="form-text text-danger" slot="required">Nomor UN is a required field</small>
             </field-messages>
           </div>
         </validate>
 
-         <validate tag="div">
+        <validate tag="div">
           <div class="form-group">
-            <label for="model-nama_lomba">Nama Lomba</label>
-            <input type="text" class="form-control" id="model-nama_lomba" v-model="model.nama_lomba" name="nama_lomba" placeholder="Nama Lomba" required autofocus>
-            <field-messages name="nama_lomba" show="$invalid && $submitted" class="text-danger">
+            <label for="model-no_sktm">Nomor SKTM</label>
+            <input type="text" class="form-control" id="model-no_sktm" v-model="model.no_sktm" name="no_sktm" placeholder="Nomor SKTM" required autofocus>
+            <field-messages name="no_sktm" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">This field is a required field</small>
+              <small class="form-text text-danger" slot="required">Nomor SKTM is a required field</small>
+            </field-messages>
+          </div>
+        </validate>
+
+        <validate tag="div">
+          <div class="form-group">
+            <label for="model-nilai">Nilai</label>
+            <input type="text" class="form-control" id="model-nilai" v-model="model.nilai" name="nilai" placeholder="Nilai" required autofocus>
+            <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
+              <small class="form-text text-success">Looks good!</small>
+              <small class="form-text text-danger" slot="required">Nilai is a required field</small>
             </field-messages>
           </div>
         </validate>
@@ -76,13 +92,13 @@
 <script>
 export default {
   mounted(){
-    axios.get('api/sktm/create')
+    axios.get('api/sktm/create/')
     .then(response => {
         response.data.user.forEach(user_element => {
             this.user.push(user_element);
         });
         response.data.master_sktm.forEach(element => {
-          this.master_sktm.push(element);
+            this.master_sktm.push(element);
         });
     })
     .catch(function(response) {
@@ -93,10 +109,11 @@ export default {
     return {
       state: {},
       model: {
-        master_sktm: "",
         user: "",
         nomor_un: "",
-        nama_lomba: "",
+        master_sktm: "",
+        no_sktm: "",
+        nilai: ""
       },
       user: [],
       master_sktm: []
@@ -109,11 +126,12 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.post('api/sktm', {
+        axios.post('api/sktm/', {
             user_id: this.model.user.id,
-            master_sktm_id: this.model.master_sktm.id,
             nomor_un: this.model.nomor_un,
-            nama_lomba: this.model.nama_lomba            
+            master_sktm_id: this.model.master_sktm.id,
+            no_sktm: this.model.no_sktm,
+            nilai: this.model.nilai
           })
           .then(response => {
             if (response.data.status == true) {
@@ -134,12 +152,13 @@ export default {
     },
     reset() {
       this.model = {
-          nomor_un: "",
-          nama_lomba: ""
+        nomor_un: "",
+        no_sktm: "",
+        nilai: ""
       };
     },
     back() {
-      window.location = '#/admin/sktm';
+      window.location = '#/admin/sktm/';
     }
   }
 }

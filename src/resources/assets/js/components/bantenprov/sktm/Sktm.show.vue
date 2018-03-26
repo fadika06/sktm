@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Show Sktm 
+      <i class="fa fa-table" aria-hidden="true"></i> SKTM 
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -17,45 +17,41 @@
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Master Sktm :</b> {{ model.master_sktm.juara }}
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
             <b>Nomor UN :</b> {{ model.nomor_un }}
           </div>
         </div>
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Nama Lomba :</b> {{ model.nama_lomba }}
+            <b>Master SKTM  :</b> {{ model.master_sktm.nama }}
           </div>
         </div>
-        
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <b>Nomor SKTM :</b> {{ model.no_sktm }}
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <b>Nilai :</b> {{ model.nilai }}
+          </div>
+        </div>
+            
       </vue-form>
     </div>
-
-    <div class="card-footer text-muted">
-        <div class="form-row mt-6">
-            <div class="col-md">
-              <b>Nama Lomba :</b> {{ model.nama_lomba }}
-            </div>
+       <div class="card-footer text-muted">
+        <div class="row">
+          <div class="col-md">
+            <b>Username :</b> {{ model.user.name }}
           </div>
-          <div class="form-row mt-6">
-          <div class="form-row mt-12">
-            <div class="col-md">
-              Dibuat : {{ model.created_at }}
-            </div>
-          </div>
-          <div class="form-row mt-12">
-            <div class="col-md">
-              Diperbaiki : {{ model.updated_at }}
-            </div>
+          <div class="col-md">
+            <div class="col-md text-right">Dibuat : {{ model.created_at }}</div>
+            <div class="col-md text-right">Diperbaiki : {{ model.updated_at }}</div>
           </div>
         </div>
-    </div>
-
+      </div>
   </div>
 </template>
 
@@ -66,9 +62,12 @@ export default {
       .then(response => {
         if (response.data.status == true) {
           this.model.user = response.data.user;
-          this.model.master_sktm = response.data.master_sktm;
           this.model.nomor_un = response.data.sktm.nomor_un;
-          this.model.nama_lomba = response.data.sktm.nama_lomba;
+          this.model.master_sktm = response.data.sktm.master_sktm;
+          this.model.no_sktm = response.data.sktm.no_sktm;
+          this.model.nilai = response.data.sktm.nilai;
+          this.model.created_at = response.data.sktm.created_at;
+          this.model.updated_at = response.data.sktm.updated_at;
         } else {
           alert('Failed');
         }
@@ -84,9 +83,12 @@ export default {
       state: {},
       model: {
         user: "",
-        master_sktm: "",
         nomor_un: "",
-        nama_lomba: "",
+        master_sktm: "",
+        no_sktm: "",
+        nilai: "",
+        created_at:       "",
+        updated_at:       ""
       },
       user: [],
       master_sktm: []
@@ -99,11 +101,14 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.put('api/sktm/' + this.$route.params.id, {
-            master_sktm_id: this.model.master_sktm.id,
+        axios.put('api/siswa/' + this.$route.params.id, {
+            user_id: this.model.user.id,
             nomor_un: this.model.nomor_un,
-            nama_lomba: this.model.old_label,
-            user_id: this.model.sktm.id
+            master_sktm_id: this.model.master_sktm.id,
+            no_sktm: this.model.no_sktm,
+            nilai: this.model.nilai,
+            created_at: this.model.created_at,
+            updated_at: this.model.updated_at
           })
           .then(response => {
             if (response.data.status == true) {
@@ -123,11 +128,11 @@ export default {
       }
     },
     reset() {
-      axios.get('api/sktm/' + this.$route.params.id + '/edit')
+      axios.get('api/siswa/' + this.$route.params.id + '/edit')
         .then(response => {
           if (response.data.status == true) {
-            this.model.label = response.data.sktm.label;
-            this.model.description = response.data.sktm.description;
+            this.model.label = response.data.siswa.label;
+            this.model.description = response.data.siswa.description;
           } else {
             alert('Failed');
           }

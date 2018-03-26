@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Add Master Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Add Master SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -23,7 +23,7 @@
 
             <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">username is a required field</small>
+              <small class="form-text text-danger" slot="required">Username is a required field</small>
             </field-messages>
             </validate>
           </div>
@@ -31,22 +31,11 @@
 
     <validate tag="div">
           <div class="form-group">
-            <label for="model-juara">Juara</label>
-            <input type="text" class="form-control" id="model-juara" v-model="model.juara" name="juara" placeholder="Juara" required autofocus>
-            <field-messages name="juara" show="$invalid && $submitted" class="text-danger">
+            <label for="model-nama">Nama</label>
+            <input type="text" class="form-control" id="model-nama" v-model="model.nama" name="nama" placeholder="Nama" required autofocus>
+            <field-messages name="nama" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">This field is a required field</small>
-            </field-messages>
-          </div>
-        </validate>
-
-         <validate tag="div">
-          <div class="form-group">
-            <label for="model-tingkat">Tingkat</label>
-            <input type="text" class="form-control" id="model-tingkat" v-model="model.tingkat" name="tingkat" placeholder="Tingkat" required autofocus>
-            <field-messages name="tingkat" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">This field is a required field</small>
+              <small class="form-text text-danger" slot="required">Nama is a required field</small>
             </field-messages>
           </div>
         </validate>
@@ -57,18 +46,18 @@
             <input type="text" class="form-control" id="model-nilai" v-model="model.nilai" name="nilai" placeholder="Nilai" required autofocus>
             <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">This field is a required field</small>
+              <small class="form-text text-danger" slot="required">Nilai is a required field</small>
             </field-messages>
           </div>
         </validate>
 
-        <validate tag="div">
+         <validate tag="div">
           <div class="form-group">
-            <label for="model-bobot">Bobot</label>
-            <input type="text" class="form-control" id="model-bobot" v-model="model.bobot" name="bobot" placeholder="Bobot" required autofocus>
-            <field-messages name="bobot" show="$invalid && $submitted" class="text-danger">
+            <label for="model-instansi">Instansi</label>
+            <input type="text" class="form-control" id="model-instansi" v-model="model.instansi" name="instansi" placeholder="Instansi" required autofocus>
+            <field-messages name="instansi" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">This field is a required field</small>
+              <small class="form-text text-danger" slot="required">Instansi is a required field</small>
             </field-messages>
           </div>
         </validate>
@@ -103,11 +92,10 @@ export default {
     return {
       state: {},
       model: {
-        juara: "",
         user: "",
-        tingkat: "",
+        nama: "",
         nilai: "",
-        bobot: "",
+        instansi: ""
       },
       user: []
     }
@@ -121,10 +109,9 @@ export default {
       } else {
         axios.post('api/master-sktm/', {
             user_id: this.model.user.id,
-            juara: this.model.juara,
-            tingkat: this.model.tingkat,
+            nama: this.model.nama,
             nilai: this.model.nilai,
-            bobot: this.model.bobot,             
+            instansi: this.model.instansi       
           })
           .then(response => {
             if (response.data.status == true) {
@@ -145,10 +132,9 @@ export default {
     },
     reset() {
       this.model = {
-          juara: "",
-          tingkat: "",
+          nama: "",
           nilai: "",
-          bobot: ""
+          instansi: ""
       };
     },
     back() {

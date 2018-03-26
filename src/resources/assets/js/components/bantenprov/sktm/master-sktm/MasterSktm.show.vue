@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Show Master Sktm 
+      <i class="fa fa-table" aria-hidden="true"></i> Master SKTM 
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -17,19 +17,7 @@
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Username :</b> {{ model.user.name }}
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <b>Juara :</b> {{ model.juara }}
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <b>Tingkat :</b> {{ model.tingkat }}
+            <b>Nama :</b> {{ model.nama }}
           </div>
         </div>
 
@@ -41,14 +29,23 @@
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Bobot :</b> {{ model.bobot }}
+            <b>Instansi :</b> {{ model.instansi }}
           </div>
         </div>
-
-        
         
       </vue-form>
     </div>
+       <div class="card-footer text-muted">
+        <div class="row">
+          <div class="col-md">
+            <b>Username :</b> {{ model.user.name }}
+          </div>
+          <div class="col-md">
+            <div class="col-md text-right">Dibuat : {{ model.created_at }}</div>
+            <div class="col-md text-right">Diperbaiki : {{ model.updated_at }}</div>
+          </div>
+        </div>
+      </div>
   </div>
 </template>
 
@@ -59,10 +56,11 @@ export default {
       .then(response => {
         if (response.data.status == true) {
           this.model.user = response.data.user;
-          this.model.juara = response.data.master_sktm.juara;
-          this.model.tingkat = response.data.master_sktm.tingkat;
+          this.model.nama = response.data.master_sktm.nama;
           this.model.nilai = response.data.master_sktm.nilai;
-          this.model.bobot = response.data.master_sktm.bobot;
+          this.model.instansi = response.data.master_sktm.instansi;
+          this.model.created_at = response.data.master_sktm.created_at;
+          this.model.updated_at = response.data.master_sktm.updated_at;
         } else {
           alert('Failed');
         }
@@ -78,10 +76,11 @@ export default {
       state: {},
       model: {
         user: "",
-        juara: "",
-        tingkat: "",
+        nama: "",
         nilai: "",
-        bobot: "",
+        instansi: "",
+        created_at: "",
+        updated_at: ""
       },
       user: []
     }
@@ -94,10 +93,12 @@ export default {
         return;
       } else {
         axios.put('api/master-sktm/' + this.$route.params.id, {
-            juara: this.model.juara,
+            nama: this.model.nama,
             nilai: this.model.nilai,
-            bobot: this.model.bobot,
-            user_id: this.model.master_sktm.id
+            instansi: this.model.instansi,
+            user_id: this.model.master_sktm.id,
+            created_at: this.model.created_at,
+            updated_at: this.model.updated_at
           })
           .then(response => {
             if (response.data.status == true) {

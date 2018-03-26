@@ -58,7 +58,7 @@ class SktmController extends Controller
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
                 $q->where('nomor_un', 'like', $value)
-                    ->orWhere('nama_lomba', 'like', $value);
+                    ->orWhere('nilai', 'like', $value);
             });
         }
 
@@ -66,7 +66,7 @@ class SktmController extends Controller
         $response = $query->paginate($perPage);
 
         foreach($response as $master_sktm){
-            array_set($response->data, 'master_sktm', $master_sktm->master_sktm->juara);
+            array_set($response->data, 'master_sktm', $master_sktm->master_sktm->nama);
         }
 
         foreach($response as $user){
@@ -94,7 +94,7 @@ class SktmController extends Controller
         }
 
         foreach($master_sktms as $master_sktm){
-            array_set($master_sktm, 'label', $master_sktm->juara);
+            array_set($master_sktm, 'label', $master_sktm->nama);
         }
         
         $response['master_sktm'] = $master_sktms;
@@ -116,9 +116,10 @@ class SktmController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|unique:sktms,user_id',
-            'master_sktm_id' => 'required',
             'nomor_un' => 'required',
-            'nama_lomba' => 'required|max:255',
+            'master_sktm_id' => 'required',
+            'no_sktm' => 'required',
+            'nilai' => 'required',
         ]);
 
         if($validator->fails()){
@@ -128,18 +129,20 @@ class SktmController extends Controller
                 $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
             } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
+                $sktm->master_sktm_id = $request->input('master_sktm_id');
+                $sktm->no_sktm = $request->input('no_sktm');
+                $sktm->nilai = $request->input('nilai');
                 $sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
+                $sktm->master_sktm_id = $request->input('master_sktm_id');
+                $sktm->no_sktm = $request->input('no_sktm');
+                $sktm->nilai = $request->input('nilai');
                 $sktm->save();
 
             $response['message'] = 'success';
@@ -180,7 +183,7 @@ class SktmController extends Controller
         $sktm = $this->sktm->findOrFail($id);
 
         array_set($sktm->user, 'label', $sktm->user->name);
-        array_set($sktm->master_sktm, 'label', $sktm->master_sktm->juara);
+        array_set($sktm->master_sktm, 'label', $sktm->master_sktm->nama);
         
         $response['master_sktm'] = $sktm->master_sktm;
         $response['sktm'] = $sktm;
@@ -204,40 +207,44 @@ class SktmController extends Controller
         if ($request->input('master_sktm_id') == $request->input('master_sktm_id'))
         {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required',
-                'master_sktm_id' => 'required',
-                'nomor_un' => 'required',
-                'nama_lomba' => 'required|max:255',
+                'user_id' => 'required|unique:sktms,user_id',
+            'nomor_un' => 'required',
+            'master_sktm_id' => 'required',
+            'no_sktm' => 'required',
+            'nilai' => 'required',
                 
             ]);
         } else {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required',
-                'master_sktm_id' => 'required',
-                'nomor_un' => 'required',
-                'nama_lomba' => 'required|max:255',
+                'user_id' => 'required|unique:sktms,user_id',
+            'nomor_un' => 'required',
+            'master_sktm_id' => 'required',
+            'no_sktm' => 'required',
+            'nilai' => 'required',
             ]);
         }
 
         if ($validator->fails()) {
-            $check = $sktm->where('master_sktm_id',$request->master_sktm_id)->whereNull('deleted_at')->count();
+            $check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, master_sktm_id ' . $request->master_sktm_id . ' already exists';
+                $response['message'] = 'Failed, Master SKTM ' . $request->user_id . ' already exists';
             } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
+                $sktm->master_sktm_id = $request->input('master_sktm_id');
+                $sktm->no_sktm = $request->input('no_sktm');
+                $sktm->nilai = $request->input('nilai');
                 $sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->nomor_un = $request->input('nomor_un');
-                $sktm->nama_lomba = $request->input('nama_lomba');
+                $sktm->master_sktm_id = $request->input('master_sktm_id');
+                $sktm->no_sktm = $request->input('no_sktm');
+                $sktm->nilai = $request->input('nilai');
                 $sktm->save();
 
             $response['message'] = 'success';

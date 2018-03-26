@@ -20,18 +20,18 @@ class BantenprovSktmSeederMasterSktm extends Seeder
 
         $master_sktms = (object) [
             (object) [
+
                 'user_id' => '1',
-                'juara' => '1',
-                'tingkat' => '1',
-                'nilai' => '10',              
-                'bobot' => '1'                           
+                'nama' => 'Budi',
+                'nilai' => '1',              
+                'instansi' => 'Satu'                           
             ],
             (object) [
-                'user_id' => '1',
-                'juara' => '2',
-                'tingkat' => '2',
-                'nilai' => '20', 
-                'bobot' => '2'                          
+                
+                'user_id' => '2',
+                'nama' => 'Badu',
+                'nilai' => '2',              
+                'instansi' => 'Dua'                          
             ]
         ];
 
@@ -39,10 +39,9 @@ class BantenprovSktmSeederMasterSktm extends Seeder
             $model = MasterSktm::updateOrCreate(
                 [
                    'user_id' => $master_sktm->user_id,
-                   'juara' => $master_sktm->juara,
-                   'tingkat' => $master_sktm->tingkat,
+                   'nama' => $master_sktm->nama,
                    'nilai' => $master_sktm->nilai,
-                   'bobot' => $master_sktm->bobot,
+                   'instansi' => $master_sktm->nilai,
 
                 ]
             );
