@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Master Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Master SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -92,15 +92,9 @@ export default {
           dataClass: 'right aligned'
         },
         {
-          name: 'user.name',
-          title: 'Username',
-          sortField: 'user_id',
-          titleClass: 'center aligned'
-        },
-        {
-          name: 'juara',
-          title: 'Juara',
-          sortField: 'juara',
+          name: 'nama',
+          title: 'Nama',
+          sortField: 'nama',
           titleClass: 'center aligned'
         },
         {
@@ -110,9 +104,15 @@ export default {
           titleClass: 'center aligned'
         },
         {
-          name: 'bobot',
-          title: 'Bobot',
-          sortField: 'bobot',
+          name: 'instansi',
+          title: 'Instansi',
+          sortField: 'instansi',
+          titleClass: 'center aligned'
+        },
+        {
+          name: 'user.name',
+          title: 'Username',
+          sortField: 'user_id',
           titleClass: 'center aligned'
         },
         {

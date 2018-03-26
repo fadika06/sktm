@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Edit Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Edit SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -32,12 +32,12 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-            <label for="master_sktm">Master Sktm</label>
-            <v-select name="master_sktm" v-model="model.master_sktm" :options="master_sktm" class="mb-4"></v-select>
+            <label for="master_sktm_id">Master SKTM</label>
+            <v-select name="master_sktm_id" v-model="model.master_sktm" :options="master_sktm" class="mb-4"></v-select>
 
-            <field-messages name="master_sktm" show="$invalid && $submitted" class="text-danger">
+            <field-messages name="master_sktm_id" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Master Sktm is a required field</small>
+              <small class="form-text text-danger" slot="required">Master SKTM is a required field</small>
             </field-messages>
             </validate>
           </div>
@@ -46,6 +46,7 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
+              <label for="model-nomor_un">Nomor UN</label>
               <input class="form-control" v-model="model.nomor_un" required autofocus name="nomor_un" type="text" placeholder="Nomor UN">
 
               <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
@@ -59,11 +60,26 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <input class="form-control" v-model="model.nama_lomba" required autofocus name="nama_lomba" type="text" placeholder="Nama Lomba">
+              <label for="model-no_sktm">Nomor SKTM</label>
+              <input class="form-control" v-model="model.no_sktm" required autofocus name="no_sktm" type="text" placeholder="Nomor SKTM">
 
-              <field-messages name="nama_lomba" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="no_sktm" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Nama Lomba is a required field</small>
+                <small class="form-text text-danger" slot="required">Nomor SKTM is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="model-nilai">Nilai</label>
+              <input class="form-control" v-model="model.nilai" required autofocus name="nilai" type="text" placeholder="Nilai">
+
+              <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">Nilai is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -91,23 +107,24 @@ export default {
           this.model.user = response.data.user,
           this.model.master_sktm = response.data.master_sktm;
           this.model.nomor_un = response.data.sktm.nomor_un;
-          this.model.nama_lomba = response.data.sktm.nama_lomba;
+          this.model.no_sktm = response.data.sktm.no_sktm;
+          this.model.nilai = response.data.sktm.nilai;
         } else {
           alert('Failed');
         }
       })
       .catch(function(response) {
         alert('Break');
-        window.location.href = '#/admin/sktm';
+        window.location.href = '#/admin/sktm/';
       }),
 
       axios.get('api/sktm/create')
       .then(response => {
-        response.data.master_sktm.forEach(element => {
-            this.master_sktm.push(element);
-          });
           response.data.user.forEach(user_element => {
             this.user.push(user_element);
+          });
+          response.data.master_sktm.forEach(element => {
+            this.master_sktm.push(element);
           });
       })
       .catch(function(response) {
@@ -121,7 +138,8 @@ export default {
         user: "",
         master_sktm: "",
         nomor_un: "",
-        nama_lomba: "",
+        no_sktm: "",
+        nilai: ""
       },
       user: [],
       master_sktm: []
@@ -136,9 +154,10 @@ export default {
       } else {
         axios.put('api/sktm/' + this.$route.params.id, {
             user_id: this.model.user.id,
-            master_sktm_id: this.model.master_sktm.id,
             nomor_un: this.model.nomor_un,
-            nama_lomba: this.model.nama_lomba
+            master_sktm_id: this.model.master_sktm.id,
+            no_sktm: this.model.no_sktm,
+            nilai: this.model.nilai
           })
           .then(response => {
             if (response.data.status == true) {
@@ -162,7 +181,8 @@ export default {
         .then(response => {
           if (response.data.status == true) {
             this.model.nomor_un = response.data.sktm.nomor_un;
-            this.model.nama_lomba = response.data.sktm.nama_lomba;
+          this.model.no_sktm = response.data.sktm.no_sktm;
+          this.model.nilai = response.data.sktm.nilai;
           } else {
             alert('Failed');
           }

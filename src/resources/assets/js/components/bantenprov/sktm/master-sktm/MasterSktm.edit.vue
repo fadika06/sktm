@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Edit Master Sktm
+      <i class="fa fa-table" aria-hidden="true"></i> Edit Master SKTM
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -32,26 +32,12 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="model-juara">Juara</label>
-              <input class="form-control" v-model="model.juara" required autofocus name="juara" type="text" placeholder="Juara">
+              <label for="model-nama">Nama</label>
+              <input class="form-control" v-model="model.nama" required autofocus name="nama" type="text" placeholder="Nama">
 
-              <field-messages name="juara" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="nama" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Juara is a required field</small>
-              </field-messages>
-            </validate>
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-              <label for="model-tingkat">Tingkat</label>
-              <input class="form-control" v-model="model.tingkat" required autofocus name="tingkat" type="text" placeholder="Tingkat">
-
-              <field-messages name="tingkat" show="$invalid && $submitted" class="text-danger">
-                <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Tingkat is a required field</small>
+                <small class="form-text text-danger" slot="required">Nama is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -74,12 +60,12 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="model-bobot">Bobot</label>
-              <input class="form-control" v-model="model.bobot" required autofocus name="bobot" type="text" placeholder="Bobot">
+              <label for="model-instansi">Instansi</label>
+              <input class="form-control" v-model="model.instansi" required autofocus name="instansi" type="text" placeholder="Instansi">
 
-              <field-messages name="bobot" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="instansi" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Bobot is a required field</small>
+                <small class="form-text text-danger" slot="required">Instansi is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -105,10 +91,9 @@ export default {
       .then(response => {
         if (response.data.status == true) {
           this.model.user = response.data.user;
-          this.model.juara = response.data.master_sktm.juara;
-          this.model.tingkat = response.data.master_sktm.tingkat;
+          this.model.nama = response.data.master_sktm.nama;
           this.model.nilai = response.data.master_sktm.nilai;
-          this.model.bobot = response.data.master_sktm.bobot;
+          this.model.instansi = response.data.master_sktm.instansi;
         } else {
           alert('Failed');
         }
@@ -133,10 +118,9 @@ export default {
       state: {},
       model: {
         user: "",
-        juara: "",
-        tingkat: "",
+        nama: "",
         nilai: "",
-        bobot: "",
+        instansi: ""
       },
       user: []
     }
@@ -149,10 +133,10 @@ export default {
         return;
       } else {
         axios.put('api/master-sktm/' + this.$route.params.id, {
-            user_id: this.model.user.idj            juara: this.model.juara,
-            tingkat: this.model.tingkat,
+            user_id: this.model.user.id,           
+            nama: this.model.nama,
             nilai: this.model.nilai,
-            bobot: this.model.bobot
+            instansi: this.model.instansi
           })
           .then(response => {
             if (response.data.status == true) {
@@ -175,10 +159,9 @@ export default {
       axios.get('api/master-sktm/' + this.$route.params.id + '/edit')
         .then(response => {
           if (response.data.status == true) {
-            this.model.juara = response.data.master_sktm.juara;
-            this.model.tingkat = response.data.master_sktm.tingkat;
+            this.model.nama = response.data.master_sktm.nama;
             this.model.nilai = response.data.master_sktm.nilai;
-            this.model.bobot = response.data.master_sktm.bobot;
+            this.model.instansi = response.data.master_sktm.instansi;
           } else {
             alert('Failed');
           }

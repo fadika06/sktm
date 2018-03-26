@@ -54,8 +54,8 @@ class MasterSktmController extends Controller
         if ($request->exists('filter')) {
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
-                $q->where('nilai', 'like', $value)
-                    ->orWhere('bobot', 'like', $value);
+                $q->where('nama', 'like', $value)
+                    ->orWhere('nilai', 'like', $value);
             });
         }
 
@@ -102,11 +102,10 @@ class MasterSktmController extends Controller
         $master_sktm = $this->master_sktm;
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|unique:sktms,user_id',
-            'juara' => 'required|max:255',
-            'tingkat' => 'required|max:255',
+            'user_id' => 'required|unique:master_sktms,user_id',
+            'nama' => 'required',
             'nilai' => 'required',
-            'bobot' => 'required',
+            'instansi' => 'required',
         ]);
 
         if($validator->fails()){
@@ -116,20 +115,18 @@ class MasterSktmController extends Controller
                 $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
             } else {
                 $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->juara = $request->input('juara');
-                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nama = $request->input('nama');
                 $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->instansi = $request->input('instansi');
                 $master_sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
                 $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->juara = $request->input('juara');
-                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nama = $request->input('nama');
                 $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->instansi = $request->input('instansi');
                 $master_sktm->save();
 
             $response['message'] = 'success';
@@ -169,6 +166,7 @@ class MasterSktmController extends Controller
         $master_sktm = $this->master_sktm->findOrFail($id);
 
         array_set($master_sktm->user, 'label', $master_sktm->user->name);
+
         $response['master_sktm'] = $master_sktm;
         $response['user'] = $master_sktm->user;
         $response['status'] = true;
@@ -187,47 +185,43 @@ class MasterSktmController extends Controller
     {
         $master_sktm = $this->master_sktm->findOrFail($id);
 
-        if ($request->input('juara') == $request->input('juara'))
+        if ($request->input('user_id') == $request->input('user_id'))
         {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required',
-                'juara' => 'required|max:255',
-                'tingkat' => 'required|max:255',
+                'user_id' => 'required|unique:master_sktms,user_id',
+                'nama' => 'required',
                 'nilai' => 'required',
-                'bobot' => 'required',
+                'instansi' => 'required',
                 
             ]);
         } else {
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required',
-                'juara' => 'required|max:255',
-                'tingkat' => 'required|max:255',
+                'user_id' => 'required|unique:master_sktms,user_id',
+                'nama' => 'required',
                 'nilai' => 'required',
-                'bobot' => 'required',
+                'instansi' => 'required',
             ]);
         }
 
         if ($validator->fails()) {
-            $check = $master_sktm->where('user_id',$request->user)->whereNull('deleted_at')->count();
+            $check = $master_sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, user_id ' . $request->user . ' already exists';
+                $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
             } else {
                 $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->juara = $request->input('juara');
-                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nama = $request->input('nama');
                 $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->instansi = $request->input('instansi');
                 $master_sktm->save();
 
                 $response['message'] = 'success';
             }
         } else {
                 $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->juara = $request->input('juara');
-                $master_sktm->tingkat = $request->input('tingkat');
+                $master_sktm->nama = $request->input('nama');
                 $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->bobot = $request->input('bobot');
+                $master_sktm->instansi = $request->input('instansi');
                 $master_sktm->save();
 
             $response['message'] = 'success';
