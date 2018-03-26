@@ -1,0 +1,29 @@
+{
+    "name": "bantenprov/sktm",
+    "description": "Nama Sktm",
+    "authors": [
+        {
+            "name": "bantenprov",
+            "email": "developer.bantenprov@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "support": {
+      "source": "https://github.com/bantenprov/sktm,",
+      "issues": "https://github.com/bantenprov/sktm/issues",
+      "wiki": "https://github.com/bantenprov/sktm/wiki"
+    },
+    "require": {
+        "php": ">=5.6.4",
+        "illuminate/support": "5.4.*"
+    },
+    "autoload": {
+        "files": [
+            "src/helpers/helpers.php"
+        ],
+        "psr-4": {
+            "Bantenprov\\Sktm\\": "src"
+        }
+    },
+    "minimum-stability": "dev"
+}
