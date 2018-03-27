@@ -104,7 +104,7 @@ export default {
     axios.get('api/sktm/' + this.$route.params.id + '/edit')
       .then(response => {
         if (response.data.status == true) {
-          this.model.user = response.data.user,
+          this.model.user = response.data.user;
           this.model.master_sktm = response.data.master_sktm;
           this.model.nomor_un = response.data.sktm.nomor_un;
           this.model.no_sktm = response.data.sktm.no_sktm;

@@ -63,15 +63,15 @@ class SktmController extends Controller
         }
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $response = $query->paginate($perPage);
+        $response = $query->with('user')->with('master_sktm')->paginate($perPage);
 
-        foreach($response as $master_sktm){
+        /*foreach($response as $master_sktm){
             array_set($response->data, 'master_sktm', $master_sktm->master_sktm->nama);
         }
 
         foreach($response as $user){
             array_set($response->data, 'user', $user->user->name);
-        }
+        }*/
 
         return response()->json($response)
             ->header('Access-Control-Allow-Origin', '*')
@@ -116,17 +116,17 @@ class SktmController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|unique:sktms,user_id',
-            'nomor_un' => 'required',
-            'master_sktm_id' => 'required',
+            'nomor_un' => 'required|unique:sktms,nomor_un',
+            'master_sktm_id' => 'required|unique:sktms,master_sktm_id',
             'no_sktm' => 'required',
             'nilai' => 'required',
         ]);
 
         if($validator->fails()){
-            $check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
+            $check = $sktm->where('user_id', $request->user_id)->orWhere('nomor_un', $request->nomor_un)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, Username ' . $request->user_id . ' already exists';
+                $response['message'] = 'Failed ! Username, Nomor UN, already exists';
             } else {
                 $sktm->user_id = $request->input('user_id');
                 $sktm->nomor_un = $request->input('nomor_un');
@@ -201,34 +201,40 @@ class SktmController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {
+    {   
+        $response = array();
+        $message  = array();
         $sktm = $this->sktm->findOrFail($id);
 
-        if ($request->input('master_sktm_id') == $request->input('master_sktm_id'))
-        {
+        /*if ($request->input('master_sktm_id') == $request->input('master_sktm_id'))
+        {*/
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required|unique:sktms,user_id',
-            'nomor_un' => 'required',
-            'master_sktm_id' => 'required',
-            'no_sktm' => 'required',
-            'nilai' => 'required',
+                'user_id' => 'required|unique:sktms,user_id,'.$id,
+                'nomor_un' => 'required|unique:sktms,nomor_un,'.$id,
+                'master_sktm_id' => 'required',
+                'no_sktm' => 'required',
+                'nilai' => 'required',
                 
             ]);
-        } else {
-            $validator = Validator::make($request->all(), [
-                'user_id' => 'required|unique:sktms,user_id',
-            'nomor_un' => 'required',
-            'master_sktm_id' => 'required',
-            'no_sktm' => 'required',
-            'nilai' => 'required',
-            ]);
-        }
 
         if ($validator->fails()) {
-            $check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
+
+            foreach($validator->messages()->getMessages() as $key => $error){
+                        foreach($error AS $error_get) {
+                            array_push($message, $error_get);
+                        }                
+                    } 
+
+             $check_user     = $this->sktm->where('id','!=', $id)->where('user_id', $request->user_id);
+             $check_nomor_un = $this->sktm->where('id','!=', $id)->where('nomor_un', $request->nomor_un);
+
+             if($check_user->count() > 0 || $check_nomor_un->count() > 0){
+                  $response['message'] = implode("\n",$message);
+
+            /*$check = $sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed, Master SKTM ' . $request->user_id . ' already exists';
+                $response['message'] = 'Failed, Master SKTM ' . $request->user_id . ' already exists';*/
             } else {
                 $sktm->user_id = $request->input('user_id');
                 $sktm->nomor_un = $request->input('nomor_un');
