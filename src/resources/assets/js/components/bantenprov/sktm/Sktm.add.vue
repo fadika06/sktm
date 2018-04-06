@@ -18,6 +18,20 @@
     <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
+            <label for="siswa_id">Nama Siswa</label>
+            <v-select name="siswa_id" v-model="model.siswa" :options="siswa" class="mb-4"></v-select>
+
+            <field-messages name="siswa_id" show="$invalid && $submitted" class="text-danger">
+              <small class="form-text text-success">Looks good!</small>
+              <small class="form-text text-danger" slot="required">Nama Siswa is a required field</small>
+            </field-messages>
+            </validate>
+          </div>
+        </div>
+
+    <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
             <label for="user_id">Username</label>
             <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
 
@@ -43,17 +57,6 @@
           </div>
         </div>
 
-    <validate tag="div">
-          <div class="form-group">
-            <label for="model-nomor_un">Nomor UN</label>
-            <input type="text" class="form-control" id="model-nomor_un" v-model="model.nomor_un" name="nomor_un" placeholder="Nomor UN" required autofocus>
-            <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Nomor UN is a required field</small>
-            </field-messages>
-          </div>
-        </validate>
-
         <validate tag="div">
           <div class="form-group">
             <label for="model-no_sktm">Nomor SKTM</label>
@@ -68,7 +71,7 @@
         <validate tag="div">
           <div class="form-group">
             <label for="model-nilai">Nilai</label>
-            <input type="text" class="form-control" id="model-nilai" v-model="model.nilai" name="nilai" placeholder="Nilai" required autofocus>
+            <input type="text" class="form-control" id="model-nilai" v-model="model.nilai_sktm" name="nilai" placeholder="Nilai" required autofocus>
             <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
               <small class="form-text text-danger" slot="required">Nilai is a required field</small>
@@ -100,6 +103,9 @@ export default {
         response.data.master_sktm.forEach(element => {
             this.master_sktm.push(element);
         });
+        response.data.siswa.forEach(element => {
+          this.siswa.push(element);
+        });
     })
     .catch(function(response) {
       alert('Break');
@@ -110,13 +116,14 @@ export default {
       state: {},
       model: {
         user: "",
-        nomor_un: "",
+        siswa: "",
         master_sktm: "",
         no_sktm: "",
-        nilai: ""
+        nilai_sktm: ""
       },
       user: [],
-      master_sktm: []
+      master_sktm: [],
+      siswa: []
     }
   },
   methods: {
@@ -128,10 +135,10 @@ export default {
       } else {
         axios.post('api/sktm/', {
             user_id: this.model.user.id,
-            nomor_un: this.model.nomor_un,
+            siswa_id: this.model.siswa.id,
             master_sktm_id: this.model.master_sktm.id,
             no_sktm: this.model.no_sktm,
-            nilai: this.model.nilai
+            nilai_sktm: this.model.nilai_sktm
           })
           .then(response => {
             if (response.data.status == true) {
@@ -152,9 +159,8 @@ export default {
     },
     reset() {
       this.model = {
-        nomor_un: "",
         no_sktm: "",
-        nilai: ""
+        nilai_sktm: ""
       };
     },
     back() {

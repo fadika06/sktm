@@ -14,6 +14,20 @@
 
     <div class="card-body">
       <vue-form class="form-horizontal form-validation" :state="state" @submit.prevent="onSubmit">
+        
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+            <label for="siswa_id">Nama Siswa</label>
+            <v-select name="siswa_id" v-model="model.siswa" :options="siswa" class="mb-4"></v-select>
+
+            <field-messages name="siswa_id" show="$invalid && $submitted" class="text-danger">
+              <small class="form-text text-success">Looks good!</small>
+              <small class="form-text text-danger" slot="required">Nama Siswa is a required field</small>
+            </field-messages>
+            </validate>
+          </div>
+        </div>  
 
         <div class="form-row mt-4">
           <div class="col-md">
@@ -46,20 +60,6 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="model-nomor_un">Nomor UN</label>
-              <input class="form-control" v-model="model.nomor_un" required autofocus name="nomor_un" type="text" placeholder="Nomor UN">
-
-              <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
-                <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Nomor UN is a required field</small>
-              </field-messages>
-            </validate>
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
               <label for="model-no_sktm">Nomor SKTM</label>
               <input class="form-control" v-model="model.no_sktm" required autofocus name="no_sktm" type="text" placeholder="Nomor SKTM">
 
@@ -75,7 +75,7 @@
           <div class="col-md">
             <validate tag="div">
               <label for="model-nilai">Nilai</label>
-              <input class="form-control" v-model="model.nilai" required autofocus name="nilai" type="text" placeholder="Nilai">
+              <input class="form-control" v-model="model.nilai_sktm" required autofocus name="nilai" type="text" placeholder="Nilai">
 
               <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
@@ -105,10 +105,10 @@ export default {
       .then(response => {
         if (response.data.status == true) {
           this.model.user = response.data.user;
+          this.model.siswa = response.data.siswa;
           this.model.master_sktm = response.data.master_sktm;
-          this.model.nomor_un = response.data.sktm.nomor_un;
           this.model.no_sktm = response.data.sktm.no_sktm;
-          this.model.nilai = response.data.sktm.nilai;
+          this.model.nilai_sktm = response.data.sktm.nilai_sktm;
         } else {
           alert('Failed');
         }
@@ -120,12 +120,15 @@ export default {
 
       axios.get('api/sktm/create')
       .then(response => {
-          response.data.user.forEach(user_element => {
-            this.user.push(user_element);
+          response.data.user.forEach(element => {
+            this.user.push(element);
           });
           response.data.master_sktm.forEach(element => {
             this.master_sktm.push(element);
           });
+          response.data.siswa.forEach(element => {
+            this.siswa.push(element);
+          });  
       })
       .catch(function(response) {
         alert('Break');
@@ -137,12 +140,13 @@ export default {
       model: {
         user: "",
         master_sktm: "",
-        nomor_un: "",
+        siswa: "",
         no_sktm: "",
-        nilai: ""
+        nilai_sktm: ""
       },
       user: [],
-      master_sktm: []
+      master_sktm: [],
+      siswa: []
     }
   },
   methods: {
@@ -154,10 +158,10 @@ export default {
       } else {
         axios.put('api/sktm/' + this.$route.params.id, {
             user_id: this.model.user.id,
-            nomor_un: this.model.nomor_un,
+            siswa_id: this.model.siswa.id,
             master_sktm_id: this.model.master_sktm.id,
             no_sktm: this.model.no_sktm,
-            nilai: this.model.nilai
+            nilai_sktm: this.model.nilai_sktm
           })
           .then(response => {
             if (response.data.status == true) {
@@ -180,9 +184,8 @@ export default {
       axios.get('api/sktm/' + this.$route.params.id + '/edit')
         .then(response => {
           if (response.data.status == true) {
-            this.model.nomor_un = response.data.sktm.nomor_un;
           this.model.no_sktm = response.data.sktm.no_sktm;
-          this.model.nilai = response.data.sktm.nilai;
+          this.model.nilai_sktm = response.data.sktm.nilai_sktm;
           } else {
             alert('Failed');
           }

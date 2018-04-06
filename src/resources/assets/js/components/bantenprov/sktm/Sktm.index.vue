@@ -92,13 +92,13 @@ export default {
           dataClass: 'right aligned'
         },
         {
-          name: 'nomor_un',
-          title: 'Nomor UN',
-          sortField: 'nomor_un',
+          name: 'siswa.nama_siswa',
+          title: 'Nama Siswa',
+          sortField: 'Siswa_id',
           titleClass: 'center aligned'
         },
         {
-          name: 'master_sktm.nama',
+          name: 'master_sktm.instansi',
           title: 'Master SKTM',
           sortField: 'master_sktm_id',
           titleClass: 'center aligned'
@@ -110,9 +110,9 @@ export default {
           titleClass: 'center aligned'
         },
         {
-          name: 'nilai',
+          name: 'nilai_sktm',
           title: 'Nilai',
-          sortField: 'nilai',
+          sortField: 'nilai_sktm',
           titleClass: 'center aligned'
         },
         {
