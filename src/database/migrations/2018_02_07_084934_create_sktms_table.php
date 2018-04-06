@@ -14,11 +14,11 @@ class CreateSktmsTable extends Migration
 	{
 		Schema::create('sktms', function(Blueprint $table) {
 			$table->increments('id');
-			$table->bigInteger('nomor_un');
+			$table->integer('siswa_id');
 			$table->integer('user_id');
 			$table->integer('master_sktm_id');
 			$table->string('no_sktm');
-			$table->integer('nilai');
+			$table->integer('nilai_sktm');
 			$table->timestamps();
 			$table->softDeletes();
 		});

@@ -18,11 +18,16 @@ class Sktm extends Model
     protected $fillable = [
         'user_id',
         'master_sktm_id',
-        'nomor_un',
+        'siswa_id',
         'no_sktm',
         'nilai'
     ];
-
+    
+    public function siswa()
+    {
+        return $this->belongsTo('Bantenprov\Siswa\Models\Bantenprov\Siswa\Siswa','siswa_id');
+    }
+    
     public function master_sktm()
     {
         return $this->belongsTo('Bantenprov\Sktm\Models\Bantenprov\Sktm\MasterSktm','master_sktm_id');

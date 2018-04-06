@@ -15,15 +15,15 @@
     <div class="card-body">
       <vue-form class="form-horizontal form-validation" :state="state" @submit.prevent="onSubmit">
 
-        <div class="form-row mt-4">
+        <div class="form-row">
           <div class="col-md">
-            <b>Nomor UN :</b> {{ model.nomor_un }}
+            <b>Nama Siswa :</b> {{ model.siswa.nama_siswa }}
           </div>
         </div>
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Master SKTM  :</b> {{ model.master_sktm.nama }}
+            <b>Master SKTM  :</b> {{ model.master_sktm.instansi }}
           </div>
         </div>
 
@@ -35,7 +35,7 @@
 
         <div class="form-row mt-4">
           <div class="col-md">
-            <b>Nilai :</b> {{ model.nilai }}
+            <b>Nilai :</b> {{ model.nilai_sktm }}
           </div>
         </div>
             
@@ -62,10 +62,10 @@ export default {
       .then(response => {
         if (response.data.status == true) {
           this.model.user = response.data.user;
-          this.model.nomor_un = response.data.sktm.nomor_un;
+          this.model.siswa = response.data.siswa;
           this.model.master_sktm = response.data.sktm.master_sktm;
           this.model.no_sktm = response.data.sktm.no_sktm;
-          this.model.nilai = response.data.sktm.nilai;
+          this.model.nilai_sktm = response.data.sktm.nilai_sktm;
           this.model.created_at = response.data.sktm.created_at;
           this.model.updated_at = response.data.sktm.updated_at;
         } else {
@@ -83,15 +83,16 @@ export default {
       state: {},
       model: {
         user: "",
-        nomor_un: "",
+        siswa: "",
         master_sktm: "",
         no_sktm: "",
-        nilai: "",
+        nilai_sktm: "",
         created_at:       "",
         updated_at:       ""
       },
       user: [],
-      master_sktm: []
+      master_sktm: [],
+      siswa: []
     }
   },
   methods: {
@@ -103,10 +104,10 @@ export default {
       } else {
         axios.put('api/siswa/' + this.$route.params.id, {
             user_id: this.model.user.id,
-            nomor_un: this.model.nomor_un,
+            siswa_id: this.model.siswa.id,
             master_sktm_id: this.model.master_sktm.id,
             no_sktm: this.model.no_sktm,
-            nilai: this.model.nilai,
+            nilai_sktm: this.model.nilai_sktm,
             created_at: this.model.created_at,
             updated_at: this.model.updated_at
           })
@@ -128,11 +129,10 @@ export default {
       }
     },
     reset() {
-      axios.get('api/siswa/' + this.$route.params.id + '/edit')
+      axios.get('api/sktm/' + this.$route.params.id + '/edit')
         .then(response => {
           if (response.data.status == true) {
-            this.model.label = response.data.siswa.label;
-            this.model.description = response.data.siswa.description;
+            
           } else {
             alert('Failed');
           }
