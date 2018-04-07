@@ -64,7 +64,7 @@ class SktmController extends Controller
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
                 $q->where('id', 'like', $value)
-                    ->orWhere('nilai_sktm', 'like', $value);
+                    ->orWhere('nilai', 'like', $value);
             });
         }
 
