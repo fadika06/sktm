@@ -64,7 +64,7 @@ class SktmController extends Controller
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
                 $q->where('id', 'like', $value)
-                    ->orWhere('nilai_sktm', 'like', $value);
+                    ->orWhere('nilai', 'like', $value);
             });
         }
 
@@ -129,23 +129,23 @@ class SktmController extends Controller
 
         $validator = Validator::make($request->all(), [
             'user_id' => 'required|unique:sktms,user_id',
-            'siswa_id' => 'required|unique:sktms,siswa_id',
+            'nomor_un' => 'required|unique:sktms,nomor_un',
             'master_sktm_id' => 'required|unique:sktms,master_sktm_id',
             'no_sktm' => 'required',
             'nilai_sktm' => 'required',
         ]);
 
         if($validator->fails()){
-            $check = $sktm->where('user_id', $request->user_id)->orWhere('master_sktm_id',$request->master_sktm_id)->orWhere('siswa_id',$request->siswa_id)->whereNull('deleted_at')->count();
+            $check = $sktm->where('user_id', $request->user_id)->orWhere('master_sktm_id',$request->master_sktm_id)->orWhere('nomor_un',$request->nomor_un)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
                 $response['message'] = 'Failed ! Username, Nama Siswa, Master SKTM, already exists';
             } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->siswa_id = $request->input('siswa_id');
+                $sktm->nomor_un = $request->input('nomor_un');
                 $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->no_sktm = $request->input('no_sktm');
-                $sktm->nilai_sktm = $request->input('nilai_sktm');
+                $sktm->nilai = $request->input('nilai_sktm');
                 $sktm->save();
 
                 $check_sktm = $this->nilai->where('siswa_id', $request->input('siswa_id'));
@@ -167,10 +167,10 @@ class SktmController extends Controller
             }
         } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->siswa_id = $request->input('siswa_id');
+                $sktm->nomor_un = $request->input('nomor_un');
                 $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->no_sktm = $request->input('no_sktm');
-                $sktm->nilai_sktm = $request->input('nilai_sktm');
+                $sktm->nilai = $request->input('nilai_sktm');
                 $sktm->save();
 
                 $check_sktm = $this->nilai->where('siswa_id', $request->input('siswa_id'));
@@ -258,7 +258,7 @@ class SktmController extends Controller
         {*/
             $validator = Validator::make($request->all(), [
                 'user_id' => 'required|unique:sktms,user_id,'.$id,
-                'siswa_id' => 'required|unique:sktms,siswa_id,'.$id,
+                'nomor_un' => 'required|unique:sktms,nomor_un,'.$id,
                 'master_sktm_id' => 'required',
                 'no_sktm' => 'required',
                 'nilai_sktm' => 'required',
@@ -274,17 +274,17 @@ class SktmController extends Controller
                     } 
 
              $check_user     = $this->sktm->where('id','!=', $id)->where('user_id', $request->user_id);
-             $check_siswa = $this->sktm->where('id','!=', $id)->where('siswa_id', $request->siswa_id);
+             $check_siswa = $this->sktm->where('id','!=', $id)->where('nomor_un', $request->nomor_un);
 
              if($check_user->count() > 0 || $check_siswa->count() > 0){
                   $response['message'] = implode("\n",$message);
 
             } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->siswa_id = $request->input('siswa_id');
+                $sktm->nomor_un = $request->input('nomor_un');
                 $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->no_sktm = $request->input('no_sktm');
-                $sktm->nilai_sktm = $request->input('nilai_sktm');
+                $sktm->nilai = $request->input('nilai_sktm');
                 $sktm->save();
 
                 $check_sktm = $this->nilai->where('siswa_id', $request->input('siswa_id'));
@@ -300,10 +300,10 @@ class SktmController extends Controller
             }
         } else {
                 $sktm->user_id = $request->input('user_id');
-                $sktm->siswa_id = $request->input('siswa_id');
+                $sktm->nomor_un = $request->input('nomor_un');
                 $sktm->master_sktm_id = $request->input('master_sktm_id');
                 $sktm->no_sktm = $request->input('no_sktm');
-                $sktm->nilai_sktm = $request->input('nilai_sktm');
+                $sktm->nilai = $request->input('nilai_sktm');
                 $sktm->save();
 
                 $check_sktm = $this->nilai->where('siswa_id', $request->input('siswa_id'));

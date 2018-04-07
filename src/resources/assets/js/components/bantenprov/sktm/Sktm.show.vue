@@ -65,7 +65,7 @@ export default {
           this.model.siswa = response.data.siswa;
           this.model.master_sktm = response.data.sktm.master_sktm;
           this.model.no_sktm = response.data.sktm.no_sktm;
-          this.model.nilai_sktm = response.data.sktm.nilai_sktm;
+          this.model.nilai_sktm = response.data.sktm.nilai;
           this.model.created_at = response.data.sktm.created_at;
           this.model.updated_at = response.data.sktm.updated_at;
         } else {
