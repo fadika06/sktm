@@ -14,7 +14,7 @@
 
     <div class="card-body">
       <vue-form class="form-horizontal form-validation" :state="state" @submit.prevent="onSubmit">
-        
+
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
@@ -24,20 +24,6 @@
             <field-messages name="siswa_id" show="$invalid && $submitted" class="text-danger">
               <small class="form-text text-success">Looks good!</small>
               <small class="form-text text-danger" slot="required">Nama Siswa is a required field</small>
-            </field-messages>
-            </validate>
-          </div>
-        </div>  
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-            <label for="user_id">Username</label>
-            <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
-
-            <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Username is a required field</small>
             </field-messages>
             </validate>
           </div>
@@ -87,6 +73,20 @@
 
         <div class="form-row mt-4">
           <div class="col-md">
+            <validate tag="div">
+            <label for="user_id">Username</label>
+            <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
+
+            <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
+              <small class="form-text text-success">Looks good!</small>
+              <small class="form-text text-danger" slot="required">Username is a required field</small>
+            </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
             <button type="submit" class="btn btn-primary">Submit</button>
 
             <button type="reset" class="btn btn-secondary" @click="reset">Reset</button>
@@ -128,7 +128,7 @@ export default {
           });
           response.data.siswa.forEach(element => {
             this.siswa.push(element);
-          });  
+          });
       })
       .catch(function(response) {
         alert('Break');

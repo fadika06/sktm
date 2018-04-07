@@ -15,20 +15,6 @@
     <div class="card-body">
       <vue-form class="form-horizontal form-validation" :state="state" @submit.prevent="onSubmit">
 
-    <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-            <label for="user_id">Username</label>
-            <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
-
-            <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Username is a required field</small>
-            </field-messages>
-            </validate>
-          </div>
-        </div>
-
     <validate tag="div">
           <div class="form-group">
             <label for="model-nama">Nama</label>
@@ -61,6 +47,20 @@
             </field-messages>
           </div>
         </validate>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="user_id">Username</label>
+              <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
+
+              <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">Username is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
 
          <div class="form-row mt-4">
           <div class="col-md">
@@ -107,11 +107,11 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.post('api/master-sktm/', {
+        axios.post('api/master-sktm', {
             user_id: this.model.user.id,
             nama: this.model.nama,
             nilai: this.model.nilai,
-            instansi: this.model.instansi       
+            instansi: this.model.instansi
           })
           .then(response => {
             if (response.data.status == true) {
