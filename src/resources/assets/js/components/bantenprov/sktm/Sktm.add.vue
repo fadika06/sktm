@@ -135,6 +135,7 @@ export default {
       } else {
         axios.post('api/sktm', {
             user_id: this.model.user.id,
+            nomor_un: this.model.siswa.nomor_un,
             siswa_id: this.model.siswa.id,
             master_sktm_id: this.model.master_sktm.id,
             no_sktm: this.model.no_sktm,
