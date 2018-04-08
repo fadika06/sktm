@@ -60,7 +60,7 @@ class MasterSktmController extends Controller
         }
 
         $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $response = $query->with('user')->paginate($perPage);        
+        $response = $query->with('user')->paginate($perPage);
 
         return response()->json($response)
             ->header('Access-Control-Allow-Origin', '*')
@@ -75,13 +75,29 @@ class MasterSktmController extends Controller
 
     public function create()
     {
-        $users = $this->user->all();
+        $response = [];
 
-        foreach($users as $user){
-            array_set($user, 'label', $user->name);
+        $users_special = $this->user->all();
+        $users_standar = $this->user->find(\Auth::User()->id);
+        $current_user = \Auth::User();
+
+        $role_check = \Auth::User()->hasRole(['superadministrator','administrator']);
+
+        if($role_check){
+            $response['user_special'] = true;
+            foreach($users_special as $user){
+                array_set($user, 'label', $user->name);
+            }
+            $response['user'] = $users_special;
+        }else{
+            $response['user_special'] = false;
+            array_set($users_standar, 'label', $users_standar->name);
+            $response['user'] = $users_standar;
         }
-        
-        $response['user'] = $users;
+
+        array_set($current_user, 'label', $current_user->name);
+
+        $response['current_user'] = $current_user;
         $response['status'] = true;
 
         return response()->json($response);
@@ -149,7 +165,7 @@ class MasterSktmController extends Controller
     public function show($id)
     {
         $master_sktm = $this->master_sktm->findOrFail($id);
-        
+
         $response['user'] = $master_sktm->user;
         $response['master_sktm'] = $master_sktm;
         $response['status'] = true;
@@ -185,7 +201,7 @@ class MasterSktmController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
-    {   
+    {
         $response = array();
         $message  = array();
         $master_sktm = $this->master_sktm->findOrFail($id);
@@ -196,7 +212,7 @@ class MasterSktmController extends Controller
                 'nama' => 'required',
                 'nilai' => 'required',
                 'instansi' => 'required',
-                
+
             ]);
 
         if ($validator->fails()) {
@@ -204,8 +220,8 @@ class MasterSktmController extends Controller
             foreach($validator->messages()->getMessages() as $key => $error){
                         foreach($error AS $error_get) {
                             array_push($message, $error_get);
-                        }                
-                    } 
+                        }
+                    }
 
              /*$check_user = $this->master_sktm->where('id','!=', $id)->where('user_id', $request->user_id);*/
              $check_user = $this->master_sktm->where('id','!=', $id)->where('label', $request->label);
