@@ -105,12 +105,17 @@ export default {
 
       axios.get('api/master-sktm/create')
       .then(response => {
-          response.data.user.forEach(user_element => {
-            this.user.push(user_element);
-          });
+          if(response.data.user_special == true){
+            response.data.user.forEach(user_element => {
+              this.user.push(user_element);
+            });
+          }else{
+            this.user.push(response.data.user);
+          }
       })
       .catch(function(response) {
         alert('Break');
+        window.location.href = '#/admin/master-sktm/';
       })
   },
   data() {
