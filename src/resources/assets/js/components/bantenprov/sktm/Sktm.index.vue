@@ -94,7 +94,7 @@ export default {
         {
           name: 'siswa.nama_siswa',
           title: 'Nama Siswa',
-          sortField: 'Siswa_id',
+          sortField: 'nomor_un',
           titleClass: 'center aligned'
         },
         {
@@ -110,9 +110,9 @@ export default {
           titleClass: 'center aligned'
         },
         {
-          name: 'nilai_sktm',
+          name: 'nilai',
           title: 'Nilai',
-          sortField: 'nilai_sktm',
+          sortField: 'nilai',
           titleClass: 'center aligned'
         },
         {
