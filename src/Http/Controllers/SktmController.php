@@ -145,7 +145,7 @@ class SktmController extends Controller
         $nilai_sktm = $request->nilai_sktm;
 
         $validator = Validator::make($request->all(), [
-            'user_id' => 'required|unique:sktms,user_id',
+            'user_id' => 'required',
             'nomor_un' => 'required|unique:sktms,nomor_un',
             'master_sktm_id' => 'required|unique:sktms,master_sktm_id',
             'no_sktm' => 'required',
@@ -153,10 +153,10 @@ class SktmController extends Controller
         ]);
 
         if($validator->fails()){
-            $check = $sktm->where('user_id', $request->user_id)->orWhere('master_sktm_id',$request->master_sktm_id)->orWhere('nomor_un',$request->nomor_un)->whereNull('deleted_at')->count();
+            $check = $sktm->Where('master_sktm_id',$request->master_sktm_id)->orWhere('nomor_un',$request->nomor_un)->whereNull('deleted_at')->count();
 
             if ($check > 0) {
-                $response['message'] = 'Failed ! Username, Nama Siswa, Master SKTM, already exists';
+                $response['message'] = 'Failed ! Nama Siswa, Master SKTM, already exists';
             } else {
                 $sktm->user_id = $request->input('user_id');
                 $sktm->nomor_un = $request->input('nomor_un');
@@ -274,7 +274,7 @@ class SktmController extends Controller
         /*if ($request->input('master_sktm_id') == $request->input('master_sktm_id'))
         {*/
             $validator = Validator::make($request->all(), [
-                'user_id' => 'required|unique:sktms,user_id,'.$id,
+                'user_id' => 'required',
                 'nomor_un' => 'required|unique:sktms,nomor_un,'.$id,
                 'master_sktm_id' => 'required',
                 'no_sktm' => 'required',
@@ -290,10 +290,9 @@ class SktmController extends Controller
                         }
                     }
 
-             $check_user     = $this->sktm->where('id','!=', $id)->where('user_id', $request->user_id);
              $check_siswa = $this->sktm->where('id','!=', $id)->where('nomor_un', $request->nomor_un);
 
-             if($check_user->count() > 0 || $check_siswa->count() > 0){
+             if($check_siswa->count() > 0){
                   $response['message'] = implode("\n",$message);
 
             } else {
