@@ -21,7 +21,7 @@ class BantenprovSktmSeederSktm extends Seeder
         $sktms = (object) [
             (object) [
                 'user_id' => '1',
-                'siswa_id' => '1',
+                'nomor_un' => '1',
                 'master_sktm_id' => '1',
                 'no_sktm' => '1',
                 'nilai' => '1'
@@ -29,7 +29,7 @@ class BantenprovSktmSeederSktm extends Seeder
             ],
             (object) [
                 'user_id' => '2',
-                'siswa_id' => '2',
+                'nomor_un' => '2',
                 'master_sktm_id' => '2',
                 'no_sktm' => '2',
                 'nilai' => '2'
@@ -41,7 +41,7 @@ class BantenprovSktmSeederSktm extends Seeder
                 [
                    'user_id' => $sktm->user_id,
                    'master_sktm_id' => $sktm->master_sktm_id,
-                   'siswa_id' => $sktm->siswa_id,
+                   'nomor_un' => $sktm->nomor_un,
                    'no_sktm' => $sktm->no_sktm,
                    'nilai' => $sktm->nilai,
                 ]
