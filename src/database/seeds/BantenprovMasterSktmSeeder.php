@@ -3,9 +3,9 @@ use Illuminate\Database\Seeder;
 /**
  * Usage :
  * [1] $ composer dump-autoload -o
- * [2] $ php artisan db:seed --class=BantenprovSktmSeeder
+ * [2] $ php artisan db:seed --class=BantenprovMasterSktmSeeder
  */
-class BantenprovSktmSeeder extends Seeder
+class BantenprovMasterSktmSeeder extends Seeder
 {
     /* text color */
     protected $RED     ="\033[0;31m";
@@ -18,14 +18,14 @@ class BantenprovSktmSeeder extends Seeder
     protected $NC      ="\033[0m";
     /* File name */
     /* location : /databse/seeds/file_name.csv */
-    protected $fileName = "BantenprovSktmSeeder.csv";
+    protected $fileName = "BantenprovMasterSktmSeeder.csv";
     /* text info : default (true) */
     protected $textInfo = true;
     /* model class */
     protected $model;
     /* __construct */
     public function __construct(){
-        $this->model = new Bantenprov\Sktm\Models\Bantenprov\Sktm\Sktm;
+        $this->model = new Bantenprov\Sktm\Models\Bantenprov\Sktm\MasterSktm;
     }
     /**
      * Run the database seeds.
@@ -44,11 +44,10 @@ class BantenprovSktmSeeder extends Seeder
 
             
         	$this->model->create([
-            	'nomor_un' => $data['nomor_un'],
-				'user_id' => $data['user_id'],
-				'master_sktm_id' => $data['master_sktm_id'],
-				'no_sktm' => $data['no_sktm'],
+            	'nama' => $data['nama'],
 				'nilai' => $data['nilai'],
+				'instansi' => $data['instansi'],
+				'user_id' => $data['user_id'],
 
         	]);
         
@@ -57,15 +56,13 @@ class BantenprovSktmSeeder extends Seeder
 
         if($this->textInfo){                
             echo "============[DATA]============\n";
-            $this->orangeText('nomor_un : ').$this->greenText($data['nomor_un']);
-			echo"\n";
-			$this->orangeText('user_id : ').$this->greenText($data['user_id']);
-			echo"\n";
-			$this->orangeText('master_sktm_id : ').$this->greenText($data['master_sktm_id']);
-			echo"\n";
-			$this->orangeText('no_sktm : ').$this->greenText($data['no_sktm']);
+            $this->orangeText('nama : ').$this->greenText($data['nama']);
 			echo"\n";
 			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
+			echo"\n";
+			$this->orangeText('instansi : ').$this->greenText($data['instansi']);
+			echo"\n";
+			$this->orangeText('user_id : ').$this->greenText($data['user_id']);
 			echo"\n";
         
             echo "============[DATA]============\n\n";
@@ -91,7 +88,7 @@ class BantenprovSktmSeeder extends Seeder
         $all_data = array();
         $row = 1;
         while(($data = fgetcsv($file, 1000, ",")) !== FALSE){
-            $all_data[] = ['nomor_un' => $data[0],'user_id' => $data[1],'master_sktm_id' => $data[2],'no_sktm' => $data[3],'nilai' => $data[4],];
+            $all_data[] = ['nama' => $data[0],'nilai' => $data[1],'instansi' => $data[2],'user_id' => $data[3],];
         }
         fclose($file);
         return  $all_data;
