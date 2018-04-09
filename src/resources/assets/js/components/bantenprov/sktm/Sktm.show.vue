@@ -96,51 +96,6 @@ export default {
     }
   },
   methods: {
-    onSubmit: function() {
-      let app = this;
-
-      if (this.state.$invalid) {
-        return;
-      } else {
-        axios.put('api/siswa/' + this.$route.params.id, {
-            user_id: this.model.user.id,
-            siswa_id: this.model.siswa.id,
-            master_sktm_id: this.model.master_sktm.id,
-            no_sktm: this.model.no_sktm,
-            nilai_sktm: this.model.nilai_sktm,
-            created_at: this.model.created_at,
-            updated_at: this.model.updated_at
-          })
-          .then(response => {
-            if (response.data.status == true) {
-              if(response.data.message == 'success'){
-                alert(response.data.message);
-                app.back();
-              }else{
-                alert(response.data.message);
-              }
-            } else {
-              alert(response.data.message);
-            }
-          })
-          .catch(function(response) {
-            alert('Break ' + response.data.message);
-          });
-      }
-    },
-    reset() {
-      axios.get('api/sktm/' + this.$route.params.id + '/edit')
-        .then(response => {
-          if (response.data.status == true) {
-            
-          } else {
-            alert('Failed');
-          }
-        })
-        .catch(function(response) {
-          alert('Break ');
-        });
-    },
     back() {
       window.location = '#/admin/sktm';
     }
