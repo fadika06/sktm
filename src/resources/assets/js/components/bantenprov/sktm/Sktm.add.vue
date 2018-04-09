@@ -29,20 +29,6 @@
           </div>
         </div>
 
-    <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-            <label for="user_id">Username</label>
-            <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
-
-            <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Username is a required field</small>
-            </field-messages>
-            </validate>
-          </div>
-        </div>
-
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
@@ -79,6 +65,20 @@
           </div>
         </validate>
 
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="user_id">Username</label>
+              <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
+
+              <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">Username is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
          <div class="form-row mt-4">
           <div class="col-md">
             <button type="submit" class="btn btn-primary">Submit</button>
@@ -97,18 +97,29 @@ export default {
   mounted(){
     axios.get('api/sktm/create/')
     .then(response => {
-        response.data.user.forEach(user_element => {
-            this.user.push(user_element);
-        });
+      if (response.data.status == true) {
+        this.model.user = response.data.current_user;
+
         response.data.master_sktm.forEach(element => {
             this.master_sktm.push(element);
         });
         response.data.siswa.forEach(element => {
           this.siswa.push(element);
         });
+        if(response.data.user_special == true){
+          response.data.user.forEach(user_element => {
+            this.user.push(user_element);
+          });
+        }else{
+          this.user.push(response.data.user);
+        }
+      } else {
+        alert('Failed');
+      }
     })
     .catch(function(response) {
       alert('Break');
+      window.location = '#/admin/sktm/';
     });
   },
   data() {
@@ -133,8 +144,9 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.post('api/sktm/', {
+        axios.post('api/sktm', {
             user_id: this.model.user.id,
+            nomor_un: this.model.siswa.nomor_un,
             siswa_id: this.model.siswa.id,
             master_sktm_id: this.model.master_sktm.id,
             no_sktm: this.model.no_sktm,
