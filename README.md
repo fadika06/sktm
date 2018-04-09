@@ -71,6 +71,7 @@ $ composer dump-autoload
 
 ```bash
 $ php artisan db:seed --class=BantenprovSktmSeeder
+$ php artisan db:seed --class=BantenprovMasterSktmSeeder
 
 ```
 
