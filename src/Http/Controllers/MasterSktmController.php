@@ -5,6 +5,7 @@ namespace Bantenprov\Sktm\Http\Controllers;
 /* Require */
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Bantenprov\Sktm\Facades\SktmFacade;
 
 /* Models */
@@ -13,27 +14,28 @@ use App\User;
 
 /* Etc */
 use Validator;
+use Auth;
 
 /**
- * The SktmController class.
+ * The MasterSktmController class.
  *
  * @package Bantenprov\Sktm
  * @author  bantenprov <developer.bantenprov@gmail.com>
  */
 class MasterSktmController extends Controller
 {
+    protected $master_sktm;
+    protected $user;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    protected $master_sktm;
-    protected $user;
-
-    public function __construct(MasterSktm $master_sktm, User $user)
+    public function __construct()
     {
-        $this->master_sktm = $master_sktm;
-        $this->user = $user;
+        $this->master_sktm  = new MasterSktm;
+        $this->user         = new User;
     }
 
     /**
@@ -54,13 +56,15 @@ class MasterSktmController extends Controller
         if ($request->exists('filter')) {
             $query->where(function($q) use($request) {
                 $value = "%{$request->filter}%";
+
                 $q->where('nama', 'like', $value)
-                    ->orWhere('nilai', 'like', $value);
+                    ->orWhere('instansi', 'like', $value);
             });
         }
 
-        $perPage = request()->has('per_page') ? (int) request()->per_page : null;
-        $response = $query->with('user')->paginate($perPage);
+        $perPage    = request()->has('per_page') ? (int) request()->per_page : null;
+
+        $response   = $query->with(['user'])->paginate($perPage);
 
         return response()->json($response)
             ->header('Access-Control-Allow-Origin', '*')
@@ -68,90 +72,67 @@ class MasterSktmController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
-
-    public function create()
+    public function get()
     {
-        $response = [];
+        $master_sktms = $this->master_sktm->with(['user'])->get();
 
-        $users_special = $this->user->all();
-        $users_standar = $this->user->find(\Auth::User()->id);
-        $current_user = \Auth::User();
-
-        $role_check = \Auth::User()->hasRole(['superadministrator','administrator']);
-
-        if($role_check){
-            $response['user_special'] = true;
-            foreach($users_special as $user){
-                array_set($user, 'label', $user->name);
-            }
-            $response['user'] = $users_special;
-        }else{
-            $response['user_special'] = false;
-            array_set($users_standar, 'label', $users_standar->name);
-            $response['user'] = $users_standar;
+        foreach ($master_sktms as $master_sktm) {
+            array_set($master_sktm, 'label', $master_sktm->nama);
         }
 
-        array_set($current_user, 'label', $current_user->name);
-
-        $response['current_user'] = $current_user;
-        $response['status'] = true;
+        $response['master_sktms']   = $master_sktms;
+        $response['error']          = false;
+        $response['message']        = 'Success';
+        $response['status']         = true;
 
         return response()->json($response);
     }
 
     /**
-     * Display the specified resource.
+     * Show the form for creating a new resource.
      *
-     * @param  \App\Sktm  $sktm
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function create()
     {
-        $master_sktm = $this->master_sktm;
+        $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
+        $master_sktm    = $this->master_sktm->getAttributes();
+        $users          = $this->user->getAttributes();
+        $users_special  = $this->user->all();
+        $users_standar  = $this->user->findOrFail($user_id);
+        $current_user   = Auth::User();
 
-        $validator = Validator::make($request->all(), [
-            /*'user_id' => 'required|unique:master_sktms,user_id',*/
-            'user_id' => 'required',
-            'nama' => 'required',
-            'nilai' => 'required',
-            'instansi' => 'required',
-        ]);
+        $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
 
-        /*if($validator->fails()){
-            $check = $master_sktm->where('user_id',$request->user_id)->whereNull('deleted_at')->count();
+        if ($role_check) {
+            $user_special = true;
 
-            if ($check > 0) {
-                $response['message'] = 'Failed ! Username, already exists';*/
-          if($validator->fails()){
-            $check = $master_sktm->where('label',$request->label)->whereNull('deleted_at')->count();
-
-            if ($check > 0) {
-                $response['message'] = 'Failed ! Username, already exists';
-
-            } else {
-                $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->nama = $request->input('nama');
-                $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->instansi = $request->input('instansi');
-                $master_sktm->save();
-
-                $response['message'] = 'success';
+            foreach($users_special as $user){
+                array_set($user, 'label', $user->name);
             }
-        } else {
-                $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->nama = $request->input('nama');
-                $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->instansi = $request->input('instansi');
-                $master_sktm->save();
 
-            $response['message'] = 'success';
+            $users = $users_special;
+        } else {
+            $user_special = false;
+
+            array_set($users_standar, 'label', $users_standar->name);
+
+            $users = $users_standar;
         }
 
-        $response['status'] = true;
+        array_set($current_user, 'label', $current_user->name);
+
+        $response['master_sktm']    = $master_sktm;
+        $response['users']          = $users;
+        $response['user_special']   = $user_special;
+        $response['current_user']   = $current_user;
+        $response['error']          = false;
+        $response['message']        = 'Success';
+        $response['status']         = true;
 
         return response()->json($response);
     }
@@ -162,13 +143,53 @@ class MasterSktmController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
+    public function store(Request $request)
+    {
+        $master_sktm = $this->master_sktm;
+
+        $validator = Validator::make($request->all(), [
+            'nama'      => 'required|max:255',
+            'instansi'  => 'required|max:255',
+            'nilai'     => 'required|numeric',
+            'user_id'   => "required|exists:{$this->user->getTable()},id",
+        ]);
+
+        if ($validator->fails()) {
+            $error      = true;
+            $message    = $validator->errors()->first();
+        } else {
+            $master_sktm->nama      = $request->input('nama');
+            $master_sktm->instansi  = $request->input('instansi');
+            $master_sktm->nilai     = $request->input('nilai');
+            $master_sktm->user_id   = $request->input('user_id');
+            $master_sktm->save();
+
+            $error      = false;
+            $message    = 'Success';
+        }
+
+        $response['master_sktm']    = $master_sktm;
+        $response['error']          = $error;
+        $response['message']        = $message;
+        $response['status']         = true;
+
+        return response()->json($response);
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\MasterSktm  $master_sktm
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
-        $master_sktm = $this->master_sktm->findOrFail($id);
+        $master_sktm = $this->master_sktm->with(['user'])->findOrFail($id);
 
-        $response['user'] = $master_sktm->user;
-        $response['master_sktm'] = $master_sktm;
-        $response['status'] = true;
+        $response['master_sktm']    = $master_sktm;
+        $response['error']          = false;
+        $response['message']        = 'Success';
+        $response['status']         = true;
 
         return response()->json($response);
     }
@@ -179,16 +200,46 @@ class MasterSktmController extends Controller
      * @param  \App\Sktm  $sktm
      * @return \Illuminate\Http\Response
      */
-
     public function edit($id)
     {
-        $master_sktm = $this->master_sktm->findOrFail($id);
+        $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
+        $master_sktm    = $this->master_sktm->with(['user'])->findOrFail($id);
+        $users          = $this->user->getAttributes();
+        $users_special  = $this->user->all();
+        $users_standar  = $this->user->findOrFail($user_id);
+        $current_user   = Auth::User();
 
-        array_set($master_sktm->user, 'label', $master_sktm->user->name);
+        $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
 
-        $response['master_sktm'] = $master_sktm;
-        $response['user'] = $master_sktm->user;
-        $response['status'] = true;
+        if ($master_sktm->user !== null) {
+            array_set($master_sktm->user, 'label', $master_sktm->user->name);
+        }
+
+        if ($role_check) {
+            $user_special = true;
+
+            foreach($users_special as $user){
+                array_set($user, 'label', $user->name);
+            }
+
+            $users = $users_special;
+        } else {
+            $user_special = false;
+
+            array_set($users_standar, 'label', $users_standar->name);
+
+            $users = $users_standar;
+        }
+
+        array_set($current_user, 'label', $current_user->name);
+
+        $response['master_sktm']    = $master_sktm;
+        $response['users']          = $users;
+        $response['user_special']   = $user_special;
+        $response['current_user']   = $current_user;
+        $response['error']          = false;
+        $response['message']        = 'Success';
+        $response['status']         = true;
 
         return response()->json($response);
     }
@@ -202,53 +253,32 @@ class MasterSktmController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $response = array();
-        $message  = array();
-        $master_sktm = $this->master_sktm->findOrFail($id);
+        $master_sktm = $this->master_sktm->with(['user'])->findOrFail($id);
 
-            $validator = Validator::make($request->all(), [
-                /*'user_id' => 'required|unique:master_sktms,user_id,'.$id,*/
-                'user_id' => 'required',
-                'nama' => 'required',
-                'nilai' => 'required',
-                'instansi' => 'required',
-
-            ]);
+        $validator = Validator::make($request->all(), [
+            'nama'      => 'required|max:255',
+            'instansi'  => 'required|max:255',
+            'nilai'     => 'required|numeric',
+            'user_id'   => "required|exists:{$this->user->getTable()},id",
+        ]);
 
         if ($validator->fails()) {
-
-            foreach($validator->messages()->getMessages() as $key => $error){
-                        foreach($error AS $error_get) {
-                            array_push($message, $error_get);
-                        }
-                    }
-
-             /*$check_user = $this->master_sktm->where('id','!=', $id)->where('user_id', $request->user_id);*/
-             $check_user = $this->master_sktm->where('id','!=', $id)->where('label', $request->label);
-
-             if($check_user->count() > 0){
-                  $response['message'] = implode("\n",$message);
-
-            } else {
-                $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->nama = $request->input('nama');
-                $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->instansi = $request->input('instansi');
-                $master_sktm->save();
-
-                $response['message'] = 'success';
-            }
+            $error      = true;
+            $message    = $validator->errors()->first();
         } else {
-                $master_sktm->user_id = $request->input('user_id');
-                $master_sktm->nama = $request->input('nama');
-                $master_sktm->nilai = $request->input('nilai');
-                $master_sktm->instansi = $request->input('instansi');
-                $master_sktm->save();
+            $master_sktm->nama      = $request->input('nama');
+            $master_sktm->instansi  = $request->input('instansi');
+            $master_sktm->nilai     = $request->input('nilai');
+            $master_sktm->user_id   = $request->input('user_id');
+            $master_sktm->save();
 
-            $response['message'] = 'success';
+            $error      = false;
+            $message    = 'Success';
         }
 
-        $response['status'] = true;
+        $response['error']      = $error;
+        $response['message']    = $message;
+        $response['status']     = true;
 
         return response()->json($response);
     }
@@ -256,7 +286,7 @@ class MasterSktmController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Sktm  $sktm
+     * @param  \App\MasterSktm  $master-sktm
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -264,9 +294,13 @@ class MasterSktmController extends Controller
         $master_sktm = $this->master_sktm->findOrFail($id);
 
         if ($master_sktm->delete()) {
-            $response['status'] = true;
+            $response['message']    = 'Success';
+            $response['success']    = true;
+            $response['status']     = true;
         } else {
-            $response['status'] = false;
+            $response['message']    = 'Failed';
+            $response['success']    = false;
+            $response['status']     = false;
         }
 
         return json_encode($response);

@@ -149,7 +149,7 @@ export default {
     }
   },
   mounted: function () {
-    axios.get('/json/bantenprov/sktm/sktm-020.json').then(response => {
+    axios.get('/json/bantenprov/sktm/master-sktm/master-sktm-020.json').then(response => {
 
       let ke = 0;
 
