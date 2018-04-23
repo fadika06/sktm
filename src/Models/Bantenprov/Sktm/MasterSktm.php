@@ -16,17 +16,12 @@ class MasterSktm extends Model
         'deleted_at'
     ];
     protected $fillable = [
-        'user_id',
         'nama',
         'nilai',
-        'instansi'
+        'instansi',
+        'user_id',
     ];
-    
-    public function siswa()
-    {
-        return $this->belongsTo('Bantenprov\Siswa\Models\Bantenprov\Siswa\Siswa','siswa_id');
-    }
-    
+
     public function user()
     {
         return $this->belongsTo('App\User','user_id');

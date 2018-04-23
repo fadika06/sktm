@@ -16,18 +16,18 @@ class Sktm extends Model
         'deleted_at'
     ];
     protected $fillable = [
-        'user_id',
-        'master_sktm_id',
         'nomor_un',
+        'master_sktm_id',
         'no_sktm',
-        'nilai'
+        'nilai',
+        'user_id',
     ];
-    
+
     public function siswa()
     {
         return $this->belongsTo('Bantenprov\Siswa\Models\Bantenprov\Siswa\Siswa','nomor_un','nomor_un');
     }
-    
+
     public function master_sktm()
     {
         return $this->belongsTo('Bantenprov\Sktm\Models\Bantenprov\Sktm\MasterSktm','master_sktm_id');
