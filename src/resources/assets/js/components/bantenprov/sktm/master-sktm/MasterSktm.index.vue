@@ -95,7 +95,7 @@ export default {
         },
         {
           name: 'nama',
-          title: 'Nama',
+          title: 'Kriteria',
           sortField: 'nama',
           titleClass: 'center aligned'
         },
