@@ -45,8 +45,8 @@ class BantenprovSktmSeederMasterSktm extends Seeder
 
         	$this->model->create([
             	'nama' => $data['nama'],
-				'nilai' => $data['nilai'],
 				'instansi' => $data['instansi'],
+				'nilai' => $data['nilai'],
 				'user_id' => $data['user_id'],
 
         	]);
@@ -58,9 +58,9 @@ class BantenprovSktmSeederMasterSktm extends Seeder
             echo "============[DATA]============\n";
             $this->orangeText('nama : ').$this->greenText($data['nama']);
 			echo"\n";
-			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
-			echo"\n";
 			$this->orangeText('instansi : ').$this->greenText($data['instansi']);
+			echo"\n";
+			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
 			echo"\n";
 			$this->orangeText('user_id : ').$this->greenText($data['user_id']);
 			echo"\n";
@@ -88,7 +88,11 @@ class BantenprovSktmSeederMasterSktm extends Seeder
         $all_data = array();
         $row = 1;
         while(($data = fgetcsv($file, 1000, ",")) !== FALSE){
-            $all_data[] = ['nama' => $data[0],'nilai' => $data[1],'instansi' => $data[2],'user_id' => $data[3],];
+            $all_data[] = [
+                'nama' => $data[0],
+                'instansi' => $data[1],
+                'nilai' => $data[2],
+                'user_id' => $data[3],];
         }
         fclose($file);
         return  $all_data;

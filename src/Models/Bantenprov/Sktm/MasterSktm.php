@@ -17,8 +17,8 @@ class MasterSktm extends Model
     ];
     protected $fillable = [
         'nama',
-        'nilai',
         'instansi',
+        'nilai',
         'user_id',
     ];
 
