@@ -15,10 +15,10 @@
 
     <div class="card-body">
       <dl class="row">
-          <dt class="col-4">Nama</dt>
+          <dt class="col-4">Kriteria</dt>
           <dd class="col-8">{{ model.nama }}</dd>
 
-          <dt class="col-4">Kode</dt>
+          <dt class="col-4">Instansi</dt>
           <dd class="col-8">{{ model.instansi }}</dd>
 
           <dt class="col-4">Nilai</dt>
