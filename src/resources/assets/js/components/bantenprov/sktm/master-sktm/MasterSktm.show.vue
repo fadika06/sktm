@@ -1,138 +1,112 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Master SKTM 
+      <i class="fa fa-table" aria-hidden="true"></i> {{ title }}
 
-      <ul class="nav nav-pills card-header-pills pull-right">
-        <li class="nav-item">
-          <button class="btn btn-primary btn-sm" role="button" @click="back">
-            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-          </button>
-        </li>
-      </ul>
+      <div class="btn-group pull-right" role="group" style="display:flex;">
+        <button class="btn btn-warning btn-sm" role="button" @click="edit">
+          <i class="fa fa-pencil" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-primary btn-sm" role="button" @click="back">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
 
     <div class="card-body">
-      <vue-form class="form-horizontal form-validation" :state="state" @submit.prevent="onSubmit">
+      <dl class="row">
+          <dt class="col-4">Nama</dt>
+          <dd class="col-8">{{ model.nama }}</dd>
 
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <b>Nama :</b> {{ model.nama }}
-          </div>
-        </div>
+          <dt class="col-4">Kode</dt>
+          <dd class="col-8">{{ model.instansi }}</dd>
 
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <b>Nilai :</b> {{ model.nilai }}
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <b>Instansi :</b> {{ model.instansi }}
-          </div>
-        </div>
-        
-      </vue-form>
+          <dt class="col-4">Nilai</dt>
+          <dd class="col-8">{{ model.nilai }}</dd>
+      </dl>
     </div>
-       <div class="card-footer text-muted">
-        <div class="row">
-          <div class="col-md">
-            <b>Username :</b> {{ model.user.name }}
-          </div>
-          <div class="col-md">
-            <div class="col-md text-right">Dibuat : {{ model.created_at }}</div>
-            <div class="col-md text-right">Diperbaiki : {{ model.updated_at }}</div>
-          </div>
+
+    <div class="card-footer text-muted">
+      <div class="row">
+        <div class="col-md">
+          <b>Username :</b> {{ model.user.name }}
+        </div>
+        <div class="col-md">
+          <div class="col-md text-right">Dibuat : {{ model.created_at }}</div>
+          <div class="col-md text-right">Diperbarui : {{ model.updated_at }}</div>
         </div>
       </div>
+    </div>
   </div>
 </template>
 
 <script>
-export default {
-  mounted() {
-    axios.get('api/master-sktm/' + this.$route.params.id)
-      .then(response => {
-        if (response.data.status == true) {
-          this.model.user = response.data.user;
-          this.model.nama = response.data.master_sktm.nama;
-          this.model.nilai = response.data.master_sktm.nilai;
-          this.model.instansi = response.data.master_sktm.instansi;
-          this.model.created_at = response.data.master_sktm.created_at;
-          this.model.updated_at = response.data.master_sktm.updated_at;
-        } else {
-          alert('Failed');
-        }
-      })
-      .catch(function(response) {
-        alert('Break');
-        window.location.href = '#/admin/master-sktm/';
-      })
+import swal from 'sweetalert2';
 
-  },
+export default {
   data() {
     return {
       state: {},
+      title: 'View Master SKTM',
       model: {
-        user: "",
-        nama: "",
-        nilai: "",
-        instansi: "",
-        created_at: "",
-        updated_at: ""
+        nama        : '',
+        instansi    : '',
+        nilai       : '',
+        user_id     : '',
+        created_at  : '',
+        updated_at  : '',
+
+        user        : [],
       },
-      user: []
     }
   },
-  methods: {
-    onSubmit: function() {
-      let app = this;
+  mounted() {
+    let app = this;
 
-      if (this.state.$invalid) {
-        return;
-      } else {
-        axios.put('api/master-sktm/' + this.$route.params.id, {
-            nama: this.model.nama,
-            nilai: this.model.nilai,
-            instansi: this.model.instansi,
-            user_id: this.model.master_sktm.id,
-            created_at: this.model.created_at,
-            updated_at: this.model.updated_at
-          })
-          .then(response => {
-            if (response.data.status == true) {
-              if(response.data.message == 'success'){
-                alert(response.data.message);
-                app.back();
-              }else{
-                alert(response.data.message);
-              }
-            } else {
-              alert(response.data.message);
-            }
-          })
-          .catch(function(response) {
-            alert('Break ' + response.data.message);
-          });
-      }
-    },
-    reset() {
-      axios.get('api/master-sktm/' + this.$route.params.id + '/edit')
-        .then(response => {
-          if (response.data.status == true) {
-            this.model.label = response.data.sktm.label;
-            this.model.description = response.data.sktm.description;
-          } else {
-            alert('Failed');
+    axios.get('api/master-sktm/'+this.$route.params.id)
+      .then(response => {
+        if (response.data.status == true && response.data.error == false) {
+          this.model.nama       = response.data.master_sktm.nama;
+          this.model.instansi   = response.data.master_sktm.instansi;
+          this.model.nilai      = response.data.master_sktm.nilai;
+          this.model.user_id    = response.data.master_sktm.user_id;
+          this.model.created_at = response.data.master_sktm.created_at;
+          this.model.updated_at = response.data.master_sktm.updated_at;
+
+          this.model.user       = response.data.master_sktm.user;
+
+          if (this.model.user === null) {
+            this.model.user = {
+              'id'    : this.model.user_id,
+              'name'  : ''
+            };
           }
-        })
-        .catch(function(response) {
-          alert('Break ');
-        });
+        } else {
+          swal(
+            'Failed',
+            'Oops... '+response.data.message,
+            'error'
+          );
+
+          app.back();
+        }
+      })
+      .catch(function(response) {
+        swal(
+          'Not Found',
+          'Oops... Your page is not found.',
+          'error'
+        );
+
+        app.back();
+      });
+  },
+  methods: {
+    edit() {
+      window.location = '#/admin/master-sktm/'+this.$route.params.id+'/edit';
     },
     back() {
-      window.location = '#/admin/master-sktm/';
+      window.location = '#/admin/master-sktm';
     }
   }
 }

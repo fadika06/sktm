@@ -16,9 +16,9 @@ class CreateMasterSktmsTable extends Migration
         Schema::create('master_sktms', function (Blueprint $table) {
             $table->increments('id');
             $table->string('nama');
-            $table->integer('nilai');
             $table->string('instansi');
-            $table->integer('user_id');
+            $table->integer('nilai');
+            $table->integer('user_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,9 +3,9 @@ use Illuminate\Database\Seeder;
 /**
  * Usage :
  * [1] $ composer dump-autoload -o
- * [2] $ php artisan db:seed --class=BantenprovMasterSktmSeeder
+ * [2] $ php artisan db:seed --class=BantenprovSktmSeederMasterSktm
  */
-class BantenprovMasterSktmSeeder extends Seeder
+class BantenprovSktmSeederMasterSktm extends Seeder
 {
     /* text color */
     protected $RED     ="\033[0;31m";
@@ -18,7 +18,7 @@ class BantenprovMasterSktmSeeder extends Seeder
     protected $NC      ="\033[0m";
     /* File name */
     /* location : /databse/seeds/file_name.csv */
-    protected $fileName = "BantenprovMasterSktmSeeder.csv";
+    protected $fileName = "BantenprovSktmSeederMasterSktm.csv";
     /* text info : default (true) */
     protected $textInfo = true;
     /* model class */
@@ -42,29 +42,29 @@ class BantenprovMasterSktmSeeder extends Seeder
         /* silahkan di rubah sesuai kebutuhan */
         foreach($this->readCSV() as $data){
 
-            
+
         	$this->model->create([
             	'nama' => $data['nama'],
-				'nilai' => $data['nilai'],
 				'instansi' => $data['instansi'],
+				'nilai' => $data['nilai'],
 				'user_id' => $data['user_id'],
 
         	]);
-        
+
 
         }
 
-        if($this->textInfo){                
+        if($this->textInfo){
             echo "============[DATA]============\n";
             $this->orangeText('nama : ').$this->greenText($data['nama']);
 			echo"\n";
-			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
-			echo"\n";
 			$this->orangeText('instansi : ').$this->greenText($data['instansi']);
+			echo"\n";
+			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
 			echo"\n";
 			$this->orangeText('user_id : ').$this->greenText($data['user_id']);
 			echo"\n";
-        
+
             echo "============[DATA]============\n\n";
         }
 
@@ -88,7 +88,11 @@ class BantenprovMasterSktmSeeder extends Seeder
         $all_data = array();
         $row = 1;
         while(($data = fgetcsv($file, 1000, ",")) !== FALSE){
-            $all_data[] = ['nama' => $data[0],'nilai' => $data[1],'instansi' => $data[2],'user_id' => $data[3],];
+            $all_data[] = [
+                'nama' => $data[0],
+                'instansi' => $data[1],
+                'nilai' => $data[2],
+                'user_id' => $data[3],];
         }
         fclose($file);
         return  $all_data;
