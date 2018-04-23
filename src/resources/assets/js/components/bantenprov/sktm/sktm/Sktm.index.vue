@@ -108,7 +108,7 @@ export default {
         },
         {
           name: 'master_sktm.nama',
-          title: 'SKTM',
+          title: 'Kriteria SKTM',
           sortField: 'master_sktm_id',
           titleClass: 'center aligned',
           sort: false
@@ -121,7 +121,7 @@ export default {
         },
         {
           name: 'nilai',
-          title: 'nilai',
+          title: 'Nilai',
           sortField: 'nilai',
           titleClass: 'center aligned'
         },
