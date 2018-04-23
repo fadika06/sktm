@@ -18,7 +18,7 @@ class CreateMasterSktmsTable extends Migration
             $table->string('nama');
             $table->string('instansi');
             $table->integer('nilai');
-            $table->integer('user_id');
+            $table->integer('user_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
