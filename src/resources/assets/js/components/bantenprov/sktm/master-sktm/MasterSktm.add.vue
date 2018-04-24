@@ -17,12 +17,12 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="nama">Nama</label>
-              <input type="text" class="form-control" name="nama" v-model="model.nama" placeholder="Nama" required autofocus>
+              <label for="nama">Kriteria</label>
+              <input type="text" class="form-control" name="nama" v-model="model.nama" placeholder="Kriteria" required autofocus>
 
               <field-messages name="nama" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Nama is a required field</small>
+                <small class="form-text text-danger" slot="required">Kriteria is a required field</small>
               </field-messages>
             </validate>
           </div>
