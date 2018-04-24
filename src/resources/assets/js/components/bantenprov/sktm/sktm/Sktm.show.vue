@@ -15,11 +15,17 @@
 
     <div class="card-body">
       <dl class="row">
-          <dt class="col-4">Kriteria</dt>
-          <dd class="col-8">{{ model.nama }}</dd>
+          <dt class="col-4">Nomor UN</dt>
+          <dd class="col-8">{{ model.nomor_un }}</dd>
 
-          <dt class="col-4">Instansi</dt>
-          <dd class="col-8">{{ model.instansi }}</dd>
+          <dt class="col-4">Nama Siswa</dt>
+          <dd class="col-8">{{ model.siswa.nama_siswa }}</dd>
+
+          <dt class="col-4">Kriteria SKTM</dt>
+          <dd class="col-8">{{ model.master_sktm.nama }}</dd>
+
+          <dt class="col-4">No SKTM</dt>
+          <dd class="col-8">{{ model.no_sktm }}</dd>
 
           <dt class="col-4">Nilai</dt>
           <dd class="col-8">{{ model.nilai }}</dd>
@@ -47,33 +53,53 @@ export default {
   data() {
     return {
       state: {},
-      title: 'View Master SKTM',
+      title: 'View SKTM',
       model: {
-        nama        : '',
-        instansi    : '',
-        nilai       : '',
-        user_id     : '',
-        created_at  : '',
-        updated_at  : '',
+        nomor_un        : '',
+        master_sktm_id  : '',
+        no_sktm         : '',
+        nilai           : '',
+        user_id         : '',
+        created_at      : '',
+        updated_at      : '',
 
-        user        : [],
+        siswa           : [],
+        master_sktm     : [],
+        user            : [],
       },
     }
   },
   mounted() {
     let app = this;
 
-    axios.get('api/master-sktm/'+this.$route.params.id)
+    axios.get('api/sktm/'+this.$route.params.id)
       .then(response => {
         if (response.data.status == true && response.data.error == false) {
-          this.model.nama       = response.data.master_sktm.nama;
-          this.model.instansi   = response.data.master_sktm.instansi;
-          this.model.nilai      = response.data.master_sktm.nilai;
-          this.model.user_id    = response.data.master_sktm.user_id;
-          this.model.created_at = response.data.master_sktm.created_at;
-          this.model.updated_at = response.data.master_sktm.updated_at;
+          this.model.nomor_un       = response.data.sktm.nomor_un;
+          this.model.master_sktm_id = response.data.sktm.master_sktm_id;
+          this.model.no_sktm        = response.data.sktm.no_sktm;
+          this.model.nilai          = response.data.sktm.nilai;
+          this.model.user_id        = response.data.sktm.user_id;
+          this.model.created_at     = response.data.sktm.created_at;
+          this.model.updated_at     = response.data.sktm.updated_at;
 
-          this.model.user       = response.data.master_sktm.user;
+          this.model.siswa          = response.data.sktm.siswa;
+          this.model.master_sktm    = response.data.sktm.master_sktm;
+          this.model.user           = response.data.sktm.user;
+
+          if (this.model.siswa === null) {
+            this.model.siswa = {
+              'id'         : this.model.nomor_un,
+              'nama_siswa' : ''
+            };
+          }
+
+          if (this.model.master_sktm === null) {
+            this.model.master_sktm = {
+              'id'    : this.model.master_sktm_id,
+              'nama'  : ''
+            };
+          }
 
           if (this.model.user === null) {
             this.model.user = {
@@ -103,10 +129,10 @@ export default {
   },
   methods: {
     edit() {
-      window.location = '#/admin/master-sktm/'+this.$route.params.id+'/edit';
+      window.location = '#/admin/sktm/'+this.$route.params.id+'/edit';
     },
     back() {
-      window.location = '#/admin/master-sktm';
+      window.location = '#/admin/sktm';
     }
   }
 }

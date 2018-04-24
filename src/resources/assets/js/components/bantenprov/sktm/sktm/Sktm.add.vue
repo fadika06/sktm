@@ -17,12 +17,12 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="nama">Kriteria</label>
-              <input type="text" class="form-control" name="nama" v-model="model.nama" placeholder="Kriteria" required autofocus>
+              <label for="nomor_un">Siswa</label>
+              <v-select name="nomor_un" v-model="model.siswa" :options="siswa" placeholder="Siswa" required autofocus></v-select>
 
-              <field-messages name="nama" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Kriteria is a required field</small>
+                <small class="form-text text-danger" slot="required">Siswa is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -31,22 +31,36 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="instansi">Instansi</label>
-              <input type="text" class="form-control" name="instansi" v-model="model.instansi" placeholder="Instansi" required>
+              <label for="master_sktm_id">Kriteria SKTM</label>
+              <v-select name="master_sktm_id" v-model="model.master_sktm" :options="master_sktm" placeholder="Kriteria SKTM" required></v-select>
 
-              <field-messages name="instansi" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="master_sktm_id" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Instansi is a required field</small>
+                <small class="form-text text-danger" slot="required">Kriteria SKTM is a required field</small>
               </field-messages>
             </validate>
           </div>
         </div>
 
         <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="no_sktm">No SKTM</label>
+              <input type="text" class="form-control" name="no_sktm" v-model="model.no_sktm" placeholder="No SKTM" required autofocus>
+
+              <field-messages name="no_sktm" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">No SKTM is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <!-- <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
               <label for="nilai">Nilai</label>
-              <input type="text" class="form-control" name="nilai" v-model="model.nilai" placeholder="Nilai" required>
+              <input type="text" class="form-control" name="nilai" v-model="model.nilai" placeholder="Nilai" required autofocus>
 
               <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
@@ -54,7 +68,7 @@
               </field-messages>
             </validate>
           </div>
-        </div>
+        </div> -->
 
         <div class="form-row mt-4">
           <div class="col-md">
@@ -89,24 +103,29 @@ export default {
   data() {
     return {
       state: {},
-      title: 'Add Master SKTM',
+      title: 'Add SKTM',
       model: {
-        nama        : '',
-        instansi    : '',
-        nilai       : '',
-        user_id     : '',
-        created_at  : '',
-        updated_at  : '',
+        nomor_un        : '',
+        master_sktm_id  : '',
+        no_sktm         : '',
+        nilai           : '',
+        user_id         : '',
+        created_at      : '',
+        updated_at      : '',
 
-        user        : '',
+        siswa           : '',
+        master_sktm     : '',
+        user            : '',
       },
-      user  : [],
+      siswa       : [],
+      master_sktm : [],
+      user        : [],
     }
   },
   mounted(){
     let app = this;
 
-    axios.get('api/master-sktm/create')
+    axios.get('api/sktm/create')
       .then(response => {
         if (response.data.status == true && response.data.error == false) {
           this.model.user = response.data.current_user;
@@ -135,6 +154,54 @@ export default {
 
         app.back();
       });
+
+    axios.get('api/siswa/get')
+      .then(response => {
+        if (response.data.status == true && response.data.error == false) {
+          this.siswa = response.data.siswas;
+        } else {
+          swal(
+            'Failed',
+            'Oops... '+response.data.message,
+            'error'
+          );
+
+          app.back();
+        }
+      })
+      .catch(function(response) {
+        swal(
+          'Not Found',
+          'Oops... Your page is not found.',
+          'error'
+        );
+
+        app.back();
+      });
+
+    axios.get('api/master-sktm/get')
+      .then(response => {
+        if (response.data.status == true && response.data.error == false) {
+          this.master_sktm = response.data.master_sktms;
+        } else {
+          swal(
+            'Failed',
+            'Oops... '+response.data.message,
+            'error'
+          );
+
+          app.back();
+        }
+      })
+      .catch(function(response) {
+        swal(
+          'Not Found',
+          'Oops... Your page is not found.',
+          'error'
+        );
+
+        app.back();
+      });
   },
   methods: {
     onSubmit: function() {
@@ -143,11 +210,12 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.post('api/master-sktm', {
-            nama      : this.model.nama,
-            instansi  : this.model.instansi,
-            nilai     : this.model.nilai,
-            user_id   : this.model.user.id,
+        axios.post('api/sktm', {
+            nomor_un        : this.model.siswa.nomor_un,
+            master_sktm_id  : this.model.master_sktm.id,
+            no_sktm         : this.model.no_sktm,
+            nilai           : this.model.nilai,
+            user_id         : this.model.user.id,
           })
           .then(response => {
             if (response.data.status == true) {
@@ -189,18 +257,21 @@ export default {
     },
     reset() {
       this.model = {
-        nama        : '',
-        instansi    : '',
-        nilai       : '',
-        user_id     : '',
-        created_at  : '',
-        updated_at  : '',
+        nomor_un        : '',
+        master_sktm_id  : '',
+        no_sktm         : '',
+        nilai           : '',
+        user_id         : '',
+        created_at      : '',
+        updated_at      : '',
 
-        user        : '',
+        siswa           : '',
+        master_sktm     : '',
+        user            : '',
       };
     },
     back() {
-      window.location = '#/admin/master-sktm';
+      window.location = '#/admin/sktm';
     }
   }
 }

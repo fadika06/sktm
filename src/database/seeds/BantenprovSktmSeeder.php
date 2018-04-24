@@ -11,7 +11,7 @@ class BantenprovSktmSeeder extends Seeder
      */
     public function run()
     {
-         $this->call(BantenprovSktmSeederSktm::class);
-         $this->call(BantenprovSktmSeederMasterSktm::class);
+        $this->call(BantenprovSktmSeederMasterSktm::class);
+        $this->call(BantenprovSktmSeederSktm::class);
     }
 }

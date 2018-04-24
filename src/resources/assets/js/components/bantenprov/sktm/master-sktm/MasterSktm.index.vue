@@ -1,7 +1,7 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Master SKTM
+      <i class="fa fa-table" aria-hidden="true"></i> {{ title }}
 
       <ul class="nav nav-pills card-header-pills pull-right">
         <li class="nav-item">
@@ -26,7 +26,7 @@
 
       <div class="table-responsive">
         <vuetable ref="vuetable"
-          api-url="/api/master-sktm/"
+          api-url="/api/master-sktm"
           :fields="fields"
           :sort-order="sortOrder"
           :css="css.table"
@@ -75,6 +75,7 @@
 </style>
 
 <script>
+import swal from 'sweetalert2';
 import VuetablePaginationInfo from 'vuetable-2/src/components/VuetablePaginationInfo';
 
 export default {
@@ -84,6 +85,7 @@ export default {
   data() {
     return {
       loading: true,
+      title: 'Master Sktm',
       fields: [
         {
           name: '__sequence',
@@ -93,14 +95,8 @@ export default {
         },
         {
           name: 'nama',
-          title: 'Nama',
+          title: 'Kriteria',
           sortField: 'nama',
-          titleClass: 'center aligned'
-        },
-        {
-          name: 'nilai',
-          title: 'Nilai',
-          sortField: 'nilai',
           titleClass: 'center aligned'
         },
         {
@@ -110,9 +106,9 @@ export default {
           titleClass: 'center aligned'
         },
         {
-          name: 'user.name',
-          title: 'Username',
-          sortField: 'user_id',
+          name: 'nilai',
+          title: 'Nilai',
+          sortField: 'nilai',
           titleClass: 'center aligned'
         },
         {
@@ -123,7 +119,7 @@ export default {
         },
       ],
       sortOrder: [{
-        field: 'id',
+        field: 'nama',
         direction: 'asc'
       }],
       moreParams: {},
@@ -154,27 +150,62 @@ export default {
       window.location = '#/admin/master-sktm/create';
     },
     viewRow(rowData) {
-      window.location = '#/admin/master-sktm/' + rowData.id;
+      window.location = '#/admin/master-sktm/'+rowData.id;
     },
     editRow(rowData) {
-      window.location = '#/admin/master-sktm/' + rowData.id + '/edit';
+      window.location = '#/admin/master-sktm/'+rowData.id+'/edit';
     },
     deleteRow(rowData) {
       let app = this;
 
-      if (confirm('Do you really want to delete it?')) {
-        axios.delete('/api/master-sktm/' + rowData.id)
-          .then(function(response) {
-            if (response.data.status == true) {
-              app.$refs.vuetable.reload()
-            } else {
-              alert('Failed');
-            }
-          })
-          .catch(function(response) {
-            alert('Break');
-          });
-      }
+      swal({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+          axios.delete('/api/master-sktm/'+rowData.id)
+            .then(function(response) {
+              if (response.data.status == true) {
+                app.$refs.vuetable.reload();
+
+                swal(
+                  'Deleted',
+                  'Yeah!!! Your data has been deleted.',
+                  'success'
+                );
+              } else {
+                swal(
+                  'Failed',
+                  'Oops... Failed to delete data.',
+                  'error'
+                );
+              }
+            })
+            .catch(function(response) {
+              swal(
+                'Not Found',
+                'Oops... Your page is not found.',
+                'error'
+              );
+            });
+        } else if (result.dismiss === swal.DismissReason.cancel) {
+          swal(
+            'Cancelled',
+            'Your data is safe.',
+            'error'
+          );
+        }
+      });
     },
     onPaginationData(paginationData) {
       this.$refs.pagination.setPaginationData(paginationData);

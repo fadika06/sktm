@@ -75,7 +75,7 @@ export default {
             show: true
           },
           splitArea: {
-            show: true
+            show: false
           },
           splitLine: {
             show: true,
@@ -110,7 +110,7 @@ export default {
             show: true
           },
           splitLine: {
-            show: true,
+            show: false,
             lineStyle: {
               width: 1,
               type: 'solid',
@@ -120,12 +120,21 @@ export default {
         },
         series: [{
           type: 'bar',
-          data: [],
+          data: [
+            {value:0, name:''},
+            {value:0, name:''},
+            {value:0, name:''},
+            {value:0, name:''},
+            {value:0, name:''},
+            {value:0, name:''},
+            {value:0, name:''},
+            {value:0, name:''}
+          ],
           barWidth: 30,
           barGap: '30%',
           cursor: 'default',
           itemStyle: {
-            color: '#FFEB3B'
+            color: '#3F51B5'
           }
         }],
         label: {
@@ -140,7 +149,7 @@ export default {
     }
   },
   mounted: function () {
-    axios.get('/json/bantenprov/sktm/sktm-010.json').then(response => {
+    axios.get('/json/bantenprov/sktm/sktm/sktm-020.json').then(response => {
 
       let ke = 0;
 
