@@ -44,7 +44,7 @@ class SktmController extends Controller
         $this->siswa        = new Siswa;
         $this->master_sktm  = new MasterSktm;
         $this->user         = new User;
-        $this->nilai        = new Sktm;
+        $this->nilai        = new Nilai;
     }
 
     /**
@@ -192,10 +192,32 @@ class SktmController extends Controller
             $sktm->no_sktm          = $request->input('no_sktm');
             $sktm->nilai            = $master_sktm->nilai;
             $sktm->user_id          = $request->input('user_id');
-            $sktm->save();
 
-            $error      = false;
-            $message    = 'Success';
+            $nilai = $this->nilai->updateOrCreate(
+                [
+                    'nomor_un'  => $sktm->nomor_un,
+                ],
+                [
+                    'sktm'      => $sktm->nilai,
+                    'total'     => null,
+                    'user_id'   => $sktm->user_id,
+                ]
+            );
+
+            DB::beginTransaction();
+
+            if ($sktm->save() && $nilai->save())
+            {
+                DB::commit();
+
+                $error      = false;
+                $message    = 'Success';
+            } else {
+                DB::rollBack();
+
+                $error      = true;
+                $message    = 'Failed';
+            }
         }
 
         $response['sktm']       = $sktm;
@@ -297,7 +319,7 @@ class SktmController extends Controller
         $sktm = $this->sktm->with(['siswa', 'master_sktm', 'user'])->findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            // 'nomor_un'          => "required|exists:{$this->siswa->getTable()},nomor_un|unique:{$this->akademik->getTable()},nomor_un,{$id},id,deleted_at,NULL",
+            // 'nomor_un'          => "required|exists:{$this->siswa->getTable()},nomor_un|unique:{$this->sktm->getTable()},nomor_un,{$id},id,deleted_at,NULL",
             'master_sktm_id'    => "required|exists:{$this->master_sktm->getTable()},id",
             'no_sktm'           => 'required|max:255',
             // 'nilai'             => 'required|numeric|min:0|max:100',
@@ -316,10 +338,32 @@ class SktmController extends Controller
             $sktm->no_sktm          = $request->input('no_sktm');
             $sktm->nilai            = $master_sktm->nilai;
             $sktm->user_id          = $request->input('user_id');
-            $sktm->save();
 
-            $error      = false;
-            $message    = 'Success';
+            $nilai = $this->nilai->updateOrCreate(
+                [
+                    'nomor_un'  => $sktm->nomor_un,
+                ],
+                [
+                    'sktm'      => $sktm->nilai,
+                    'total'     => null,
+                    'user_id'   => $sktm->user_id,
+                ]
+            );
+
+            DB::beginTransaction();
+
+            if ($sktm->save() && $nilai->save())
+            {
+                DB::commit();
+
+                $error      = false;
+                $message    = 'Success';
+            } else {
+                DB::rollBack();
+
+                $error      = true;
+                $message    = 'Failed';
+            }
         }
 
         $response['sktm']       = $sktm;
