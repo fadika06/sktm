@@ -184,10 +184,13 @@ class SktmController extends Controller
             $error      = true;
             $message    = $validator->errors()->first();
         } else {
+            $sktm_master_sktm_id    = $request->input('master_sktm_id');
+            $master_sktm            = $this->master_sktm->findOrFail($sktm_master_sktm_id);
+
             $sktm->nomor_un         = $request->input('nomor_un');
-            $sktm->master_sktm_id   = $request->input('master_sktm_id');
+            $sktm->master_sktm_id   = $sktm_master_sktm_id;
             $sktm->no_sktm          = $request->input('no_sktm');
-            // $sktm->nilai            = $request->input('nilai');
+            $sktm->nilai            = $master_sktm->nilai;
             $sktm->user_id          = $request->input('user_id');
             $sktm->save();
 
@@ -305,10 +308,13 @@ class SktmController extends Controller
             $error      = true;
             $message    = $validator->errors()->first();
         } else {
-            $sktm->nomor_un         = $sktm->nomor_un; // $request->input('nomor_un');
-            $sktm->master_sktm_id   = $request->input('master_sktm_id');
+            $sktm_master_sktm_id    = $request->input('master_sktm_id');
+            $master_sktm            = $this->master_sktm->findOrFail($sktm_master_sktm_id);
+
+            $sktm->nomor_un         = $request->input('nomor_un');
+            $sktm->master_sktm_id   = $sktm_master_sktm_id;
             $sktm->no_sktm          = $request->input('no_sktm');
-            // $sktm->nilai            = $request->input('nilai');
+            $sktm->nilai            = $master_sktm->nilai;
             $sktm->user_id          = $request->input('user_id');
             $sktm->save();
 
