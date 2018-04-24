@@ -213,7 +213,7 @@ class SktmController extends Controller
     {
         $sktm = $this->sktm->with(['siswa', 'master_sktm', 'user'])->findOrFail($id);
 
-        $response['sktm']   = $sktm;
+        $response['sktm']       = $sktm;
         $response['error']      = false;
         $response['message']    = 'Success';
         $response['status']     = true;
