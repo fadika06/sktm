@@ -85,7 +85,7 @@ export default {
   data() {
     return {
       loading: true,
-      title: 'Master Sktm',
+      title: 'Master SKTM',
       fields: [
         {
           name: '__sequence',
