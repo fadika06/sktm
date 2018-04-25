@@ -150,7 +150,7 @@ class MasterSktmController extends Controller
         $validator = Validator::make($request->all(), [
             'nama'      => 'required|max:255',
             'instansi'  => 'required|max:255',
-            'nilai'     => 'required|numeric',
+            'nilai'     => 'required|numeric|max:100',
             'user_id'   => "required|exists:{$this->user->getTable()},id",
         ]);
 
@@ -258,7 +258,7 @@ class MasterSktmController extends Controller
         $validator = Validator::make($request->all(), [
             'nama'      => 'required|max:255',
             'instansi'  => 'required|max:255',
-            'nilai'     => 'required|numeric',
+            'nilai'     => 'required|numeric|max:100',
             'user_id'   => "required|exists:{$this->user->getTable()},id",
         ]);
 
