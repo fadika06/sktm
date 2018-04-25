@@ -148,7 +148,7 @@ class MasterSktmController extends Controller
         $master_sktm = $this->master_sktm;
 
         $validator = Validator::make($request->all(), [
-            'nama'      => 'required|max:255',
+            'nama'      => "required|max:255|unique:{$this->master_sktm->getTable()},nama,NULL,id,instansi,{$request->input('instansi')},deleted_at,NULL",
             'instansi'  => 'required|max:255',
             'nilai'     => 'required|numeric|max:100',
             'user_id'   => "required|exists:{$this->user->getTable()},id",
@@ -197,7 +197,7 @@ class MasterSktmController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Sktm  $sktm
+     * @param  \App\MasterSktm  $master_sktm
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -248,7 +248,7 @@ class MasterSktmController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Sktm  $sktm
+     * @param  \App\MasterSktm  $master_sktm
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -256,7 +256,7 @@ class MasterSktmController extends Controller
         $master_sktm = $this->master_sktm->with(['user'])->findOrFail($id);
 
         $validator = Validator::make($request->all(), [
-            'nama'      => 'required|max:255',
+            'nama'      => "required|max:255|unique:{$this->master_sktm->getTable()},nama,{$id},id,instansi,{$request->input('instansi')},deleted_at,NULL",
             'instansi'  => 'required|max:255',
             'nilai'     => 'required|numeric|max:100',
             'user_id'   => "required|exists:{$this->user->getTable()},id",
@@ -286,7 +286,7 @@ class MasterSktmController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\MasterSktm  $master-sktm
+     * @param  \App\MasterSktm  $master_sktm
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
