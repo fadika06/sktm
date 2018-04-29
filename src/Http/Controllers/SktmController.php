@@ -106,15 +106,10 @@ class SktmController extends Controller
     {
         $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
         $sktm           = $this->sktm->getAttributes();
-        $siswas         = $this->siswa->getAttributes();
         $users          = $this->user->getAttributes();
         $users_special  = $this->user->all();
         $users_standar  = $this->user->findOrFail($user_id);
         $current_user   = Auth::User();
-
-        foreach ($siswas as $siswa) {
-            array_set($siswa, 'label', $siswa->nomor_un.' - '.$siswa->nama_siswa);
-        }
 
         $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
 
@@ -137,7 +132,6 @@ class SktmController extends Controller
         array_set($current_user, 'label', $current_user->name);
 
         $response['sktm']           = $sktm;
-        $response['siswas']         = $siswas;
         $response['users']          = $users;
         $response['user_special']   = $user_special;
         $response['current_user']   = $current_user;
@@ -242,15 +236,10 @@ class SktmController extends Controller
     {
         $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
         $sktm           = $this->sktm->with(['siswa', 'master_sktm', 'user'])->findOrFail($id);
-        $siswas         = $this->siswa->getAttributes();
         $users          = $this->user->getAttributes();
         $users_special  = $this->user->all();
         $users_standar  = $this->user->findOrFail($user_id);
         $current_user   = Auth::User();
-
-        if ($sktm->siswa !== null) {
-            array_set($sktm->siswa, 'label', $sktm->siswa->nomor_un.' - '.$sktm->siswa->nama_siswa);
-        }
 
         $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
 
@@ -276,8 +265,7 @@ class SktmController extends Controller
 
         array_set($current_user, 'label', $current_user->name);
 
-        $response['sktm']       = $sktm;
-        $response['siswas']         = $siswas;
+        $response['sktm']           = $sktm;
         $response['users']          = $users;
         $response['user_special']   = $user_special;
         $response['current_user']   = $current_user;
