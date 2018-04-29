@@ -12,9 +12,6 @@ class Sktm extends Model
     public $timestamps = true;
 
     protected $table = 'sktms';
-    protected $dates = [
-        'deleted_at',
-    ];
     protected $fillable = [
         'nomor_un',
         'master_sktm_id',
@@ -22,8 +19,13 @@ class Sktm extends Model
         'nilai',
         'user_id',
     ];
+    protected $hidden = [
+    ];
     protected $appends = [
         'label',
+    ];
+    protected $dates = [
+        'deleted_at',
     ];
 
     public function getLabelAttribute()
