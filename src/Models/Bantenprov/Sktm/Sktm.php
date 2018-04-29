@@ -39,16 +39,16 @@ class Sktm extends Model
 
     public function siswa()
     {
-        return $this->belongsTo('Bantenprov\Siswa\Models\Bantenprov\Siswa\Siswa','nomor_un','nomor_un');
+        return $this->belongsTo('Bantenprov\Siswa\Models\Bantenprov\Siswa\Siswa', 'nomor_un', 'nomor_un');
     }
 
     public function master_sktm()
     {
-        return $this->belongsTo('Bantenprov\Sktm\Models\Bantenprov\Sktm\MasterSktm','master_sktm_id');
+        return $this->belongsTo('Bantenprov\Sktm\Models\Bantenprov\Sktm\MasterSktm', 'master_sktm_id');
     }
 
     public function user()
     {
-        return $this->belongsTo('App\User','user_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
 }
