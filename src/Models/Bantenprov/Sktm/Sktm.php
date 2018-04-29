@@ -26,6 +26,15 @@ class Sktm extends Model
         'label',
     ];
 
+    public function getLabelAttribute()
+    {
+        if ($this->siswa !== null) {
+            return $this->siswa->nomor_un.' - '.$this->siswa->nama_siswa;
+        } else {
+            return $this->nomor_un.' - ';
+        }
+    }
+
     public function siswa()
     {
         return $this->belongsTo('Bantenprov\Siswa\Models\Bantenprov\Siswa\Siswa','nomor_un','nomor_un');
@@ -39,14 +48,5 @@ class Sktm extends Model
     public function user()
     {
         return $this->belongsTo('App\User','user_id');
-    }
-
-    public function getLabelAttribute()
-    {
-        if ($this->siswa !== null) {
-            return $this->siswa->nomor_un.' - '.$this->siswa->nama_siswa;
-        } else {
-            return $this->nomor_un.' - ';
-        }
     }
 }

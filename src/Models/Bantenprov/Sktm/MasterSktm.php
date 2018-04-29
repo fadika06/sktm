@@ -25,13 +25,13 @@ class MasterSktm extends Model
         'label',
     ];
 
-    public function user()
-    {
-        return $this->belongsTo('App\User','user_id');
-    }
-
     public function getLabelAttribute()
     {
         return $this->nama;
+    }
+
+    public function user()
+    {
+        return $this->belongsTo('App\User','user_id');
     }
  }
