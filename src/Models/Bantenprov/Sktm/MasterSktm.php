@@ -13,7 +13,7 @@ class MasterSktm extends Model
 
     protected $table = 'master_sktms';
     protected $dates = [
-        'deleted_at'
+        'deleted_at',
     ];
     protected $fillable = [
         'nama',
@@ -21,9 +21,17 @@ class MasterSktm extends Model
         'nilai',
         'user_id',
     ];
+    protected $appends = [
+        'label',
+    ];
 
     public function user()
     {
         return $this->belongsTo('App\User','user_id');
+    }
+
+    public function getLabelAttribute()
+    {
+        return $this->nama;
     }
  }

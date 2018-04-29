@@ -89,14 +89,6 @@ class SktmController extends Controller
     {
         $sktms = $this->sktm->with(['siswa', 'master_sktm', 'user'])->get();
 
-        foreach ($sktms as $sktm) {
-            if ($sktm->siswa !== null) {
-                array_set($sktm, 'label', $sktm->siswa->nomor_un.' - '.$sktm->siswa->nama_siswa);
-            } else {
-                array_set($sktm, 'label', $sktm->nomor_un.' - ');
-            }
-        }
-
         $response['sktms']  = $sktms;
         $response['error']      = false;
         $response['message']    = 'Success';
@@ -115,7 +107,6 @@ class SktmController extends Controller
         $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
         $sktm           = $this->sktm->getAttributes();
         $siswas         = $this->siswa->getAttributes();
-        $master_sktms   = $this->master_sktm->getAttributes();
         $users          = $this->user->getAttributes();
         $users_special  = $this->user->all();
         $users_standar  = $this->user->findOrFail($user_id);
@@ -123,10 +114,6 @@ class SktmController extends Controller
 
         foreach ($siswas as $siswa) {
             array_set($siswa, 'label', $siswa->nomor_un.' - '.$siswa->nama_siswa);
-        }
-
-        foreach ($master_sktms as $master_sktm) {
-            array_set($master_sktm, 'label', $master_sktm->nama);
         }
 
         $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
@@ -151,7 +138,6 @@ class SktmController extends Controller
 
         $response['sktm']           = $sktm;
         $response['siswas']         = $siswas;
-        $response['master_sktms']   = $master_sktms;
         $response['users']          = $users;
         $response['user_special']   = $user_special;
         $response['current_user']   = $current_user;
@@ -257,7 +243,6 @@ class SktmController extends Controller
         $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
         $sktm           = $this->sktm->with(['siswa', 'master_sktm', 'user'])->findOrFail($id);
         $siswas         = $this->siswa->getAttributes();
-        $master_sktms   = $this->master_sktm->getAttributes();
         $users          = $this->user->getAttributes();
         $users_special  = $this->user->all();
         $users_standar  = $this->user->findOrFail($user_id);
@@ -265,10 +250,6 @@ class SktmController extends Controller
 
         if ($sktm->siswa !== null) {
             array_set($sktm->siswa, 'label', $sktm->siswa->nomor_un.' - '.$sktm->siswa->nama_siswa);
-        }
-
-        if ($sktm->master_sktm !== null) {
-            array_set($sktm->master_sktm, 'label', $sktm->master_sktm->nama);
         }
 
         $role_check = Auth::User()->hasRole(['superadministrator','administrator']);

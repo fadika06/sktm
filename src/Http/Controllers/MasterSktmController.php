@@ -80,10 +80,6 @@ class MasterSktmController extends Controller
     {
         $master_sktms = $this->master_sktm->with(['user'])->get();
 
-        foreach ($master_sktms as $master_sktm) {
-            array_set($master_sktm, 'label', $master_sktm->nama);
-        }
-
         $response['master_sktms']   = $master_sktms;
         $response['error']          = false;
         $response['message']        = 'Success';

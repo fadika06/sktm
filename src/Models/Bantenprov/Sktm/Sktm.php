@@ -13,7 +13,7 @@ class Sktm extends Model
 
     protected $table = 'sktms';
     protected $dates = [
-        'deleted_at'
+        'deleted_at',
     ];
     protected $fillable = [
         'nomor_un',
@@ -21,6 +21,9 @@ class Sktm extends Model
         'no_sktm',
         'nilai',
         'user_id',
+    ];
+    protected $appends = [
+        'label',
     ];
 
     public function siswa()
@@ -36,5 +39,14 @@ class Sktm extends Model
     public function user()
     {
         return $this->belongsTo('App\User','user_id');
+    }
+
+    public function getLabelAttribute()
+    {
+        if ($this->siswa !== null) {
+            return $this->siswa->nomor_un.' - '.$this->siswa->nama_siswa;
+        } else {
+            return $this->nomor_un.' - ';
+        }
     }
 }
