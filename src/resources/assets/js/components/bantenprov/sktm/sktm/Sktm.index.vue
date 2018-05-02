@@ -26,7 +26,7 @@
 
       <div class="table-responsive">
         <vuetable ref="vuetable"
-          api-url="/api/sktm"
+          :api-url="api_url"
           :fields="fields"
           :sort-order="sortOrder"
           :css="css.table"
@@ -85,6 +85,7 @@ export default {
     return {
       loading: true,
       title: 'SKTM',
+      api_url: '/api/sktm',
       fields: [
         {
           name: '__sequence',
