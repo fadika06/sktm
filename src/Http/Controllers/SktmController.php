@@ -241,11 +241,11 @@ class SktmController extends Controller
         $users_standar  = $this->user->findOrFail($user_id);
         $current_user   = Auth::User();
 
-        $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
-
         if ($sktm->user !== null) {
             array_set($sktm->user, 'label', $sktm->user->name);
         }
+
+        $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
 
         if ($role_check) {
             $user_special = true;
