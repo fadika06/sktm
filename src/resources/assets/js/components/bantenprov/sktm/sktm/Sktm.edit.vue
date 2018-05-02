@@ -145,9 +145,9 @@ export default {
             this.model.user = response.data.sktm.user;
           }
 
-          if(response.data.user_special == true){
+          if (response.data.user_special == true) {
             this.user = response.data.users;
-          }else{
+          } else {
             this.user.push(response.data.users);
           }
         } else {
@@ -238,7 +238,7 @@ export default {
           })
           .then(response => {
             if (response.data.status == true) {
-              if(response.data.error == false){
+              if (response.data.error == false) {
                 swal(
                   'Updated',
                   'Yeah!!! Your data has been updated.',
@@ -246,7 +246,7 @@ export default {
                 );
 
                 app.back();
-              }else{
+              } else {
                 swal(
                   'Failed',
                   'Oops... '+response.data.message,
