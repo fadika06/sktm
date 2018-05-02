@@ -116,7 +116,7 @@ class SktmController extends Controller
         if ($role_check) {
             $user_special = true;
 
-            foreach($users_special as $user){
+            foreach ($users_special as $user) {
                 array_set($user, 'label', $user->name);
             }
 
@@ -250,7 +250,7 @@ class SktmController extends Controller
         if ($role_check) {
             $user_special = true;
 
-            foreach($users_special as $user){
+            foreach ($users_special as $user) {
                 array_set($user, 'label', $user->name);
             }
 
