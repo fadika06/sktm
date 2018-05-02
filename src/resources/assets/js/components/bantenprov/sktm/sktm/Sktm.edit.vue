@@ -91,7 +91,6 @@
             <button type="reset" class="btn btn-secondary" @click="reset">Reset</button>
           </div>
         </div>
-
       </vue-form>
     </div>
   </div>
@@ -134,6 +133,8 @@ export default {
           this.model.no_sktm        = response.data.sktm.no_sktm;
           this.model.nilai          = response.data.sktm.nilai;
           this.model.user_id        = response.data.sktm.user_id;
+          this.model.created_at     = response.data.sktm.created_at;
+          this.model.updated_at     = response.data.sktm.updated_at;
 
           this.model.siswa          = response.data.sktm.siswa;
           this.model.master_sktm    = response.data.sktm.master_sktm;

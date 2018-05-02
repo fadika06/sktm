@@ -70,7 +70,6 @@
             </validate>
           </div>
         </div>
-
         <div class="form-row mt-4">
           <div class="col-md">
             <button type="submit" class="btn btn-primary">Update</button>
@@ -110,10 +109,12 @@ export default {
     axios.get('api/master-sktm/'+this.$route.params.id+'/edit')
       .then(response => {
         if (response.data.status == true && response.data.error == false) {
-          this.model.nama     = response.data.master_sktm.nama;
-          this.model.instansi = response.data.master_sktm.instansi;
-          this.model.nilai    = response.data.master_sktm.nilai;
-          this.model.user_id  = response.data.master_sktm.user_id;
+          this.model.nama       = response.data.master_sktm.nama;
+          this.model.instansi   = response.data.master_sktm.instansi;
+          this.model.nilai      = response.data.master_sktm.nilai;
+          this.model.user_id    = response.data.master_sktm.user_id;
+          this.model.created_at = response.data.master_sktm.created_at;
+          this.model.updated_at = response.data.master_sktm.updated_at;
 
           if (response.data.master_sktm.user === null) {
             this.model.user = response.data.current_user;
