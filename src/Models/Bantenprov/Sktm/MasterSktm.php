@@ -12,18 +12,28 @@ class MasterSktm extends Model
     public $timestamps = true;
 
     protected $table = 'master_sktms';
-    protected $dates = [
-        'deleted_at'
-    ];
     protected $fillable = [
         'nama',
         'instansi',
         'nilai',
         'user_id',
     ];
+    protected $hidden = [
+    ];
+    protected $appends = [
+        'label',
+    ];
+    protected $dates = [
+        'deleted_at',
+    ];
+
+    public function getLabelAttribute()
+    {
+        return $this->nama;
+    }
 
     public function user()
     {
-        return $this->belongsTo('App\User','user_id');
+        return $this->belongsTo('App\User', 'user_id');
     }
  }

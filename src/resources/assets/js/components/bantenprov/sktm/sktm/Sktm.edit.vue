@@ -4,8 +4,14 @@
       <i class="fa fa-table" aria-hidden="true"></i> {{ title }}
 
       <div class="btn-group pull-right" role="group" style="display:flex;">
-        <button class="btn btn-info btn-sm" role="button" @click="view">
+        <button class="btn btn-primary btn-sm" role="button" @click="createRow">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-info btn-sm" role="button" @click="viewRow">
           <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" role="button" @click="deleteRow">
+          <i class="fa fa-trash" aria-hidden="true"></i>
         </button>
         <button class="btn btn-primary btn-sm" role="button" @click="back">
           <i class="fa fa-arrow-left" aria-hidden="true"></i>
@@ -91,7 +97,6 @@
             <button type="reset" class="btn btn-secondary" @click="reset">Reset</button>
           </div>
         </div>
-
       </vue-form>
     </div>
   </div>
@@ -134,6 +139,8 @@ export default {
           this.model.no_sktm        = response.data.sktm.no_sktm;
           this.model.nilai          = response.data.sktm.nilai;
           this.model.user_id        = response.data.sktm.user_id;
+          this.model.created_at     = response.data.sktm.created_at;
+          this.model.updated_at     = response.data.sktm.updated_at;
 
           this.model.siswa          = response.data.sktm.siswa;
           this.model.master_sktm    = response.data.sktm.master_sktm;
@@ -144,9 +151,9 @@ export default {
             this.model.user = response.data.sktm.user;
           }
 
-          if(response.data.user_special == true){
+          if (response.data.user_special == true) {
             this.user = response.data.users;
-          }else{
+          } else {
             this.user.push(response.data.users);
           }
         } else {
@@ -237,7 +244,7 @@ export default {
           })
           .then(response => {
             if (response.data.status == true) {
-              if(response.data.error == false){
+              if (response.data.error == false) {
                 swal(
                   'Updated',
                   'Yeah!!! Your data has been updated.',
@@ -245,7 +252,7 @@ export default {
                 );
 
                 app.back();
-              }else{
+              } else {
                 swal(
                   'Failed',
                   'Oops... '+response.data.message,
@@ -288,8 +295,63 @@ export default {
         user            : '',
       };
     },
-    view() {
+    createRow() {
+      window.location = '#/admin/sktm/create';
+    },
+    viewRow() {
       window.location = '#/admin/sktm/'+this.$route.params.id;
+    },
+    deleteRow() {
+      let app = this;
+
+      swal({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+          axios.delete('/api/sktm/'+this.$route.params.id)
+            .then(function(response) {
+              if (response.data.status == true) {
+                app.back();
+
+                swal(
+                  'Deleted',
+                  'Yeah!!! Your data has been deleted.',
+                  'success'
+                );
+              } else {
+                swal(
+                  'Failed',
+                  'Oops... Failed to delete data.',
+                  'error'
+                );
+              }
+            })
+            .catch(function(response) {
+              swal(
+                'Not Found',
+                'Oops... Your page is not found.',
+                'error'
+              );
+            });
+        } else if (result.dismiss === swal.DismissReason.cancel) {
+          swal(
+            'Cancelled',
+            'Your data is safe.',
+            'error'
+          );
+        }
+      });
     },
     back() {
       window.location = '#/admin/sktm';
