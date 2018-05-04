@@ -42,30 +42,29 @@ class BantenprovSktmSeederMasterSktm extends Seeder
         /* silahkan di rubah sesuai kebutuhan */
         foreach($this->readCSV() as $data){
 
-
-        	$this->model->create([
+            $this->model->create([
+            	'id' => $data['id'],
             	'nama' => $data['nama'],
 				'instansi' => $data['instansi'],
 				'nilai' => $data['nilai'],
 				'user_id' => $data['user_id'],
+            ]);
 
-        	]);
+            if($this->textInfo){
+                echo "============[DATA]============\n";
+                $this->orangeText('id : ').$this->greenText($data['id']);
+                echo"\n";
+                $this->orangeText('nama : ').$this->greenText($data['nama']);
+                echo"\n";
+                $this->orangeText('instansi : ').$this->greenText($data['instansi']);
+                echo"\n";
+                $this->orangeText('nilai : ').$this->greenText($data['nilai']);
+                echo"\n";
+                $this->orangeText('user_id : ').$this->greenText($data['user_id']);
+                echo"\n";
+                echo "============[DATA]============\n\n";
+            }
 
-
-        }
-
-        if($this->textInfo){
-            echo "============[DATA]============\n";
-            $this->orangeText('nama : ').$this->greenText($data['nama']);
-			echo"\n";
-			$this->orangeText('instansi : ').$this->greenText($data['instansi']);
-			echo"\n";
-			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
-			echo"\n";
-			$this->orangeText('user_id : ').$this->greenText($data['user_id']);
-			echo"\n";
-
-            echo "============[DATA]============\n\n";
         }
 
         $this->greenText('[ SEEDER DONE ]');
@@ -84,15 +83,18 @@ class BantenprovSktmSeederMasterSktm extends Seeder
     /* function read CSV file */
     protected function readCSV()
     {
+        /* Silahkan di rubah sesuai struktur file csv */
         $file = fopen(database_path("seeds/".$this->fileName), "r");
         $all_data = array();
         $row = 1;
         while(($data = fgetcsv($file, 1000, ",")) !== FALSE){
             $all_data[] = [
-                'nama' => $data[0],
-                'instansi' => $data[1],
-                'nilai' => $data[2],
-                'user_id' => $data[3],];
+                'id' => $data[0],
+                'nama' => $data[1],
+                'instansi' => $data[2],
+                'nilai' => $data[3],
+                'user_id' => $data[4],
+            ];
         }
         fclose($file);
         return  $all_data;
