@@ -353,15 +353,33 @@ class SktmController extends Controller
     {
         $sktm = $this->sktm->findOrFail($id);
 
-        if ($sktm->delete()) {
+        $nilai = $this->nilai->updateOrCreate(
+            [
+                'nomor_un'  => $sktm->nomor_un,
+            ],
+            [
+                'sktm'      => 0,
+                'total'     => null,
+                'user_id'   => $sktm->user_id,
+            ]
+        );
+
+        DB::beginTransaction();
+
+        if ($sktm->delete() && $nilai->save())
+        {
+            DB::commit();
+
             $response['message']    = 'Success';
             $response['success']    = true;
-            $response['status']     = true;
         } else {
+            DB::rollBack();
+
             $response['message']    = 'Failed';
             $response['success']    = false;
-            $response['status']     = false;
         }
+
+        $response['status']     = true;
 
         return json_encode($response);
     }
