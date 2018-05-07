@@ -1,57 +1,35 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <i class="fa fa-table" aria-hidden="true"></i> Edit SKTM
+      <i class="fa fa-table" aria-hidden="true"></i> {{ title }}
 
-      <ul class="nav nav-pills card-header-pills pull-right">
-        <li class="nav-item">
-          <button class="btn btn-primary btn-sm" role="button" @click="back">
-            <i class="fa fa-arrow-left" aria-hidden="true"></i>
-          </button>
-        </li>
-      </ul>
+      <div class="btn-group pull-right" role="group" style="display:flex;">
+        <button class="btn btn-primary btn-sm" role="button" @click="createRow">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-info btn-sm" role="button" @click="viewRow">
+          <i class="fa fa-eye" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" role="button" @click="deleteRow">
+          <i class="fa fa-trash" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-primary btn-sm" role="button" @click="back">
+          <i class="fa fa-arrow-left" aria-hidden="true"></i>
+        </button>
+      </div>
     </div>
 
     <div class="card-body">
       <vue-form class="form-horizontal form-validation" :state="state" @submit.prevent="onSubmit">
-
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-            <label for="nomor_un">Nama Siswa</label>
-            <v-select name="nomor_un" v-model="model.siswa" :options="siswa" class="mb-4"></v-select>
+              <label for="nomor_un">Siswa</label>
+              <v-select name="nomor_un" v-model="model.siswa" :options="siswa" placeholder="Siswa" required autofocus disabled></v-select>
 
-            <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Nama Siswa is a required field</small>
-            </field-messages>
-            </validate>
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-            <label for="master_sktm_id">Master SKTM</label>
-            <v-select name="master_sktm_id" v-model="model.master_sktm" :options="master_sktm" class="mb-4"></v-select>
-
-            <field-messages name="master_sktm_id" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Master SKTM is a required field</small>
-            </field-messages>
-            </validate>
-          </div>
-        </div>
-
-        <div class="form-row mt-4">
-          <div class="col-md">
-            <validate tag="div">
-              <label for="model-no_sktm">Nomor SKTM</label>
-              <input class="form-control" v-model="model.no_sktm" required autofocus name="no_sktm" type="text" placeholder="Nomor SKTM">
-
-              <field-messages name="no_sktm" show="$invalid && $submitted" class="text-danger">
+              <field-messages name="nomor_un" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
-                <small class="form-text text-danger" slot="required">Nomor SKTM is a required field</small>
+                <small class="form-text text-danger" slot="required">Siswa is a required field</small>
               </field-messages>
             </validate>
           </div>
@@ -60,8 +38,36 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-              <label for="model-nilai">Nilai</label>
-              <input class="form-control" v-model="model.nilai_sktm" required autofocus name="nilai" type="text" placeholder="Nilai">
+              <label for="master_sktm_id">Kriteria SKTM</label>
+              <v-select name="master_sktm_id" v-model="model.master_sktm" :options="master_sktm" placeholder="Kriteria SKTM" required></v-select>
+
+              <field-messages name="master_sktm_id" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">Kriteria SKTM is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="no_sktm">No SKTM</label>
+              <input type="text" class="form-control" name="no_sktm" v-model="model.no_sktm" placeholder="No SKTM" required autofocus>
+
+              <field-messages name="no_sktm" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">No SKTM is a required field</small>
+              </field-messages>
+            </validate>
+          </div>
+        </div>
+
+        <!-- <div class="form-row mt-4">
+          <div class="col-md">
+            <validate tag="div">
+              <label for="nilai">Nilai</label>
+              <input type="text" class="form-control" name="nilai" v-model="model.nilai" placeholder="Nilai" required autofocus>
 
               <field-messages name="nilai" show="$invalid && $submitted" class="text-danger">
                 <small class="form-text text-success">Looks good!</small>
@@ -69,18 +75,18 @@
               </field-messages>
             </validate>
           </div>
-        </div>
+        </div> -->
 
         <div class="form-row mt-4">
           <div class="col-md">
             <validate tag="div">
-            <label for="user_id">Username</label>
-            <v-select name="user_id" v-model="model.user" :options="user" class="mb-4"></v-select>
+              <label for="user_id">Username</label>
+              <v-select name="user_id" v-model="model.user" :options="user" placeholder="Username" required></v-select>
 
-            <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
-              <small class="form-text text-success">Looks good!</small>
-              <small class="form-text text-danger" slot="required">Username is a required field</small>
-            </field-messages>
+              <field-messages name="user_id" show="$invalid && $submitted" class="text-danger">
+                <small class="form-text text-success">Looks good!</small>
+                <small class="form-text text-danger" slot="required">User is a required field</small>
+              </field-messages>
             </validate>
           </div>
         </div>
@@ -88,71 +94,139 @@
         <div class="form-row mt-4">
           <div class="col-md">
             <button type="submit" class="btn btn-primary">Submit</button>
-
             <button type="reset" class="btn btn-secondary" @click="reset">Reset</button>
           </div>
         </div>
-
       </vue-form>
     </div>
   </div>
 </template>
 
 <script>
-export default {
-  mounted() {
-    axios.get('api/sktm/' + this.$route.params.id + '/edit')
-      .then(response => {
-        if (response.data.status == true) {
-          this.model.user = response.data.user;
-          this.model.siswa = response.data.siswa;
-          this.model.master_sktm = response.data.master_sktm;
-          this.model.no_sktm = response.data.sktm.no_sktm;
-          this.model.nilai_sktm = response.data.sktm.nilai;
-        } else {
-          alert('Failed');
-        }
-      })
-      .catch(function(response) {
-        alert('Break');
-        window.location.href = '#/admin/sktm/';
-      }),
+import swal from 'sweetalert2';
 
-      axios.get('api/sktm/create')
-      .then(response => {
-          response.data.master_sktm.forEach(element => {
-            this.master_sktm.push(element);
-          });
-          response.data.siswa.forEach(element => {
-            this.siswa.push(element);
-          });
-          if(response.data.user_special == true){
-            response.data.user.forEach(user_element => {
-              this.user.push(user_element);
-            });
-          }else{
-            this.user.push(response.data.user);
-          }
-      })
-      .catch(function(response) {
-        alert('Break');
-        window.location.href = '#/admin/sktm/';
-      })
-  },
+export default {
   data() {
     return {
       state: {},
+      title: 'Edit SKTM',
       model: {
-        user: "",
-        master_sktm: "",
-        siswa: "",
-        no_sktm: "",
-        nilai_sktm: ""
+        nomor_un        : '',
+        master_sktm_id  : '',
+        no_sktm         : '',
+        nilai           : '',
+        user_id         : '',
+        created_at      : '',
+        updated_at      : '',
+
+        siswa           : '',
+        master_sktm     : '',
+        user            : '',
       },
-      user: [],
-      master_sktm: [],
-      siswa: []
+      siswa       : [],
+      master_sktm : [],
+      user        : [],
     }
+  },
+  mounted(){
+    let app = this;
+
+    axios.get('api/sktm/'+this.$route.params.id+'/edit')
+      .then(response => {
+        if (response.data.status == true && response.data.error == false) {
+          this.model.nomor_un       = response.data.sktm.nomor_un;
+          this.model.master_sktm_id = response.data.sktm.master_sktm_id;
+          this.model.no_sktm        = response.data.sktm.no_sktm;
+          this.model.nilai          = response.data.sktm.nilai;
+          this.model.user_id        = response.data.sktm.user_id;
+          this.model.created_at     = response.data.sktm.created_at;
+          this.model.updated_at     = response.data.sktm.updated_at;
+
+          this.model.siswa          = response.data.sktm.siswa;
+          this.model.master_sktm    = response.data.sktm.master_sktm;
+
+          if (response.data.sktm.user === null) {
+            this.model.user = response.data.current_user;
+          } else {
+            this.model.user = response.data.sktm.user;
+          }
+
+          if (response.data.user_special == true) {
+            this.user = response.data.users;
+          } else {
+            this.user.push(response.data.users);
+          }
+        } else {
+          swal(
+            'Failed',
+            'Oops... '+response.data.message,
+            'error'
+          );
+
+          app.back();
+        }
+      })
+      .catch(function(response) {
+        swal(
+          'Not Found',
+          'Oops... Your page is not found.',
+          'error'
+        );
+
+        app.back();
+      });
+
+    axios.get('api/siswa/get')
+      .then(response => {
+        if (response.data.status == true && response.data.error == false) {
+          response.data.siswas.forEach(element => {
+            this.siswa.push(element);
+          });
+        } else {
+          swal(
+            'Failed',
+            'Oops... '+response.data.message,
+            'error'
+          );
+
+          app.back();
+        }
+      })
+      .catch(function(response) {
+        swal(
+          'Not Found',
+          'Oops... Your page is not found.',
+          'error'
+        );
+
+        app.back();
+      });
+
+    axios.get('api/master-sktm/get')
+      .then(response => {
+        if (response.data.status == true && response.data.error == false) {
+          response.data.master_sktms.forEach(element => {
+            this.master_sktm.push(element);
+          });
+        } else {
+          swal(
+            'Failed',
+            'Oops... '+response.data.message,
+            'error'
+          );
+
+          app.back();
+        }
+      })
+      .catch(function(response) {
+        swal(
+          'Not Found',
+          'Oops... Your page is not found.',
+          'error'
+        );
+
+        app.back();
+      });
   },
   methods: {
     onSubmit: function() {
@@ -161,44 +235,123 @@ export default {
       if (this.state.$invalid) {
         return;
       } else {
-        axios.put('api/sktm/' + this.$route.params.id, {
-            user_id: this.model.user.id,
-            nomor_un: this.model.siswa.nomor_un,
-            siswa_id: this.model.siswa.id,
-            master_sktm_id: this.model.master_sktm.id,
-            no_sktm: this.model.no_sktm,
-            nilai_sktm: this.model.nilai_sktm
+        axios.put('api/sktm/'+this.$route.params.id, {
+            nomor_un        : this.model.siswa.nomor_un,
+            master_sktm_id  : this.model.master_sktm.id,
+            no_sktm         : this.model.no_sktm,
+            nilai           : this.model.nilai,
+            user_id         : this.model.user.id,
           })
           .then(response => {
             if (response.data.status == true) {
-              if(response.data.message == 'success'){
-                alert(response.data.message);
+              if (response.data.error == false) {
+                swal(
+                  'Updated',
+                  'Yeah!!! Your data has been updated.',
+                  'success'
+                );
+
                 app.back();
-              }else{
-                alert(response.data.message);
+              } else {
+                swal(
+                  'Failed',
+                  'Oops... '+response.data.message,
+                  'error'
+                );
               }
             } else {
-              alert(response.data.message);
+              swal(
+                'Failed',
+                'Oops... '+response.data.message,
+                'error'
+              );
+
+              app.back();
             }
           })
           .catch(function(response) {
-            alert('Break ' + response.data.message);
+            swal(
+              'Not Found',
+              'Oops... Your page is not found.',
+              'error'
+            );
+
+            app.back();
           });
       }
     },
     reset() {
-      axios.get('api/sktm/' + this.$route.params.id + '/edit')
-        .then(response => {
-          if (response.data.status == true) {
-          this.model.no_sktm = response.data.sktm.no_sktm;
-          this.model.nilai_sktm = response.data.sktm.nilai_sktm;
-          } else {
-            alert('Failed');
-          }
-        })
-        .catch(function(response) {
-          alert('Break ');
-        });
+      this.model = {
+        nomor_un        : '',
+        master_sktm_id  : '',
+        no_sktm         : '',
+        nilai           : '',
+        ipa             : '',
+        user_id         : '',
+        created_at      : '',
+        updated_at      : '',
+
+        siswa           : '',
+        user            : '',
+      };
+    },
+    createRow() {
+      window.location = '#/admin/sktm/create';
+    },
+    viewRow() {
+      window.location = '#/admin/sktm/'+this.$route.params.id;
+    },
+    deleteRow() {
+      let app = this;
+
+      swal({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+          axios.delete('/api/sktm/'+this.$route.params.id)
+            .then(function(response) {
+              if (response.data.status == true) {
+                app.back();
+
+                swal(
+                  'Deleted',
+                  'Yeah!!! Your data has been deleted.',
+                  'success'
+                );
+              } else {
+                swal(
+                  'Failed',
+                  'Oops... Failed to delete data.',
+                  'error'
+                );
+              }
+            })
+            .catch(function(response) {
+              swal(
+                'Not Found',
+                'Oops... Your page is not found.',
+                'error'
+              );
+            });
+        } else if (result.dismiss === swal.DismissReason.cancel) {
+          swal(
+            'Cancelled',
+            'Your data is safe.',
+            'error'
+          );
+        }
+      });
     },
     back() {
       window.location = '#/admin/sktm';

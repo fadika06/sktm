@@ -44,7 +44,7 @@ class SktmController extends Controller
         $this->siswa        = new Siswa;
         $this->master_sktm  = new MasterSktm;
         $this->user         = new User;
-        $this->nilai        = new Sktm;
+        $this->nilai        = new Nilai;
     }
 
     /**
@@ -89,14 +89,6 @@ class SktmController extends Controller
     {
         $sktms = $this->sktm->with(['siswa', 'master_sktm', 'user'])->get();
 
-        foreach ($sktms as $sktm) {
-            if ($sktm->siswa !== null) {
-                array_set($sktm, 'label', $sktm->siswa->nomor_un.' - '.$sktm->siswa->nama_siswa);
-            } else {
-                array_set($sktm, 'label', $sktm->nomor_un.' - ');
-            }
-        }
-
         $response['sktms']  = $sktms;
         $response['error']      = false;
         $response['message']    = 'Success';
@@ -114,22 +106,17 @@ class SktmController extends Controller
     {
         $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
         $sktm           = $this->sktm->getAttributes();
-        $siswas         = $this->siswa->getAttributes();
         $users          = $this->user->getAttributes();
         $users_special  = $this->user->all();
         $users_standar  = $this->user->findOrFail($user_id);
         $current_user   = Auth::User();
-
-        foreach ($siswas as $siswa) {
-            array_set($siswa, 'label', $siswa->nomor_un.' - '.$siswa->nama_siswa);
-        }
 
         $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
 
         if ($role_check) {
             $user_special = true;
 
-            foreach($users_special as $user){
+            foreach ($users_special as $user) {
                 array_set($user, 'label', $user->name);
             }
 
@@ -145,7 +132,6 @@ class SktmController extends Controller
         array_set($current_user, 'label', $current_user->name);
 
         $response['sktm']           = $sktm;
-        $response['siswas']         = $siswas;
         $response['users']          = $users;
         $response['user_special']   = $user_special;
         $response['current_user']   = $current_user;
@@ -168,10 +154,9 @@ class SktmController extends Controller
 
         $validator = Validator::make($request->all(), [
             'nomor_un'          => "required|exists:{$this->siswa->getTable()},nomor_un|unique:{$this->sktm->getTable()},nomor_un,NULL,id,deleted_at,NULL",
-            'bahasa_indonesia'  => 'required|numeric|min:0|max:100',
-            'bahasa_inggris'    => 'required|numeric|min:0|max:100',
-            'matematika'        => 'required|numeric|min:0|max:100',
-            'ipa'               => 'required|numeric|min:0|max:100',
+            'master_sktm_id'    => "required|exists:{$this->master_sktm->getTable()},id",
+            'no_sktm'           => 'required|max:255',
+            // 'nilai'             => 'required|numeric|min:0|max:100',
             'user_id'           => "required|exists:{$this->user->getTable()},id",
         ]);
 
@@ -179,11 +164,13 @@ class SktmController extends Controller
             $error      = true;
             $message    = $validator->errors()->first();
         } else {
+            $sktm_master_sktm_id    = $request->input('master_sktm_id');
+            $master_sktm            = $this->master_sktm->findOrFail($sktm_master_sktm_id);
+
             $sktm->nomor_un         = $request->input('nomor_un');
-            $sktm->bahasa_indonesia = $request->input('bahasa_indonesia');
-            $sktm->bahasa_inggris   = $request->input('bahasa_inggris');
-            $sktm->matematika       = $request->input('matematika');
-            $sktm->ipa              = $request->input('ipa');
+            $sktm->master_sktm_id   = $sktm_master_sktm_id;
+            $sktm->no_sktm          = $request->input('no_sktm');
+            $sktm->nilai            = $master_sktm->nilai;
             $sktm->user_id          = $request->input('user_id');
 
             $nilai = $this->nilai->updateOrCreate(
@@ -191,9 +178,7 @@ class SktmController extends Controller
                     'nomor_un'  => $sktm->nomor_un,
                 ],
                 [
-                    'nomor_un'  => $sktm->nomor_un,
-                    'bobot'     => $sktm->calcSktmBobot($request),
-                    'sktm'  => $sktm->calcSktmSktm($request),
+                    'sktm'      => $sktm->nilai,
                     'total'     => null,
                     'user_id'   => $sktm->user_id,
                 ]
@@ -215,7 +200,7 @@ class SktmController extends Controller
             }
         }
 
-        $response['sktm']   = $sktm;
+        $response['sktm']       = $sktm;
         $response['error']      = $error;
         $response['message']    = $message;
         $response['status']     = true;
@@ -233,7 +218,7 @@ class SktmController extends Controller
     {
         $sktm = $this->sktm->with(['siswa', 'master_sktm', 'user'])->findOrFail($id);
 
-        $response['sktm']   = $sktm;
+        $response['sktm']       = $sktm;
         $response['error']      = false;
         $response['message']    = 'Success';
         $response['status']     = true;
@@ -251,26 +236,21 @@ class SktmController extends Controller
     {
         $user_id        = isset(Auth::User()->id) ? Auth::User()->id : null;
         $sktm           = $this->sktm->with(['siswa', 'master_sktm', 'user'])->findOrFail($id);
-        $siswas         = $this->siswa->getAttributes();
         $users          = $this->user->getAttributes();
         $users_special  = $this->user->all();
         $users_standar  = $this->user->findOrFail($user_id);
         $current_user   = Auth::User();
 
-        if ($sktm->siswa !== null) {
-            array_set($sktm->siswa, 'label', $sktm->siswa->nomor_un.' - '.$sktm->siswa->nama_siswa);
-        }
-
-        $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
-
         if ($sktm->user !== null) {
             array_set($sktm->user, 'label', $sktm->user->name);
         }
 
+        $role_check = Auth::User()->hasRole(['superadministrator','administrator']);
+
         if ($role_check) {
             $user_special = true;
 
-            foreach($users_special as $user){
+            foreach ($users_special as $user) {
                 array_set($user, 'label', $user->name);
             }
 
@@ -285,8 +265,7 @@ class SktmController extends Controller
 
         array_set($current_user, 'label', $current_user->name);
 
-        $response['sktm']       = $sktm;
-        $response['siswas']         = $siswas;
+        $response['sktm']           = $sktm;
         $response['users']          = $users;
         $response['user_special']   = $user_special;
         $response['current_user']   = $current_user;
@@ -310,10 +289,9 @@ class SktmController extends Controller
 
         $validator = Validator::make($request->all(), [
             // 'nomor_un'          => "required|exists:{$this->siswa->getTable()},nomor_un|unique:{$this->sktm->getTable()},nomor_un,{$id},id,deleted_at,NULL",
-            'bahasa_indonesia'  => 'required|numeric|min:0|max:100',
-            'bahasa_inggris'    => 'required|numeric|min:0|max:100',
-            'matematika'        => 'required|numeric|min:0|max:100',
-            'ipa'               => 'required|numeric|min:0|max:100',
+            'master_sktm_id'    => "required|exists:{$this->master_sktm->getTable()},id",
+            'no_sktm'           => 'required|max:255',
+            // 'nilai'             => 'required|numeric|min:0|max:100',
             'user_id'           => "required|exists:{$this->user->getTable()},id",
         ]);
 
@@ -321,11 +299,13 @@ class SktmController extends Controller
             $error      = true;
             $message    = $validator->errors()->first();
         } else {
-            $sktm->nomor_un         = $sktm->nomor_un; // $request->input('nomor_un');
-            $sktm->bahasa_indonesia = $request->input('bahasa_indonesia');
-            $sktm->bahasa_inggris   = $request->input('bahasa_inggris');
-            $sktm->matematika       = $request->input('matematika');
-            $sktm->ipa              = $request->input('ipa');
+            $sktm_master_sktm_id    = $request->input('master_sktm_id');
+            $master_sktm            = $this->master_sktm->findOrFail($sktm_master_sktm_id);
+
+            $sktm->nomor_un         = $request->input('nomor_un');
+            $sktm->master_sktm_id   = $sktm_master_sktm_id;
+            $sktm->no_sktm          = $request->input('no_sktm');
+            $sktm->nilai            = $master_sktm->nilai;
             $sktm->user_id          = $request->input('user_id');
 
             $nilai = $this->nilai->updateOrCreate(
@@ -333,9 +313,7 @@ class SktmController extends Controller
                     'nomor_un'  => $sktm->nomor_un,
                 ],
                 [
-                    'nomor_un'  => $sktm->nomor_un,
-                    'bobot'     => $sktm->calcSktmBobot($request),
-                    'sktm'  => $sktm->calcSktmSktm($request),
+                    'sktm'      => $sktm->nilai,
                     'total'     => null,
                     'user_id'   => $sktm->user_id,
                 ]
@@ -357,7 +335,7 @@ class SktmController extends Controller
             }
         }
 
-        $response['sktm']   = $sktm;
+        $response['sktm']       = $sktm;
         $response['error']      = $error;
         $response['message']    = $message;
         $response['status']     = true;
@@ -375,15 +353,33 @@ class SktmController extends Controller
     {
         $sktm = $this->sktm->findOrFail($id);
 
-        if ($sktm->delete()) {
+        $nilai = $this->nilai->updateOrCreate(
+            [
+                'nomor_un'  => $sktm->nomor_un,
+            ],
+            [
+                'sktm'      => 0,
+                'total'     => null,
+                'user_id'   => $sktm->user_id,
+            ]
+        );
+
+        DB::beginTransaction();
+
+        if ($sktm->delete() && $nilai->save())
+        {
+            DB::commit();
+
             $response['message']    = 'Success';
             $response['success']    = true;
-            $response['status']     = true;
         } else {
+            DB::rollBack();
+
             $response['message']    = 'Failed';
             $response['success']    = false;
-            $response['status']     = false;
         }
+
+        $response['status']     = true;
 
         return json_encode($response);
     }

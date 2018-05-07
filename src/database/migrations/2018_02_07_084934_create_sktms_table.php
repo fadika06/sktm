@@ -15,10 +15,10 @@ class CreateSktmsTable extends Migration
 		Schema::create('sktms', function(Blueprint $table) {
 			$table->increments('id');
 			$table->string('nomor_un');
-			$table->integer('master_sktm_id');
+			$table->integer('master_sktm_id')->nullable();
 			$table->string('no_sktm');
-			$table->integer('nilai');
-			$table->integer('user_id');
+			$table->integer('nilai')->nullable();
+			$table->integer('user_id')->nullable();
 			$table->timestamps();
 			$table->softDeletes();
 		});

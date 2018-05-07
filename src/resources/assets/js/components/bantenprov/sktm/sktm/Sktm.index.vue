@@ -26,12 +26,12 @@
 
       <div class="table-responsive">
         <vuetable ref="vuetable"
-          api-url="/api/sktm"
+          :api-url="api_url"
           :fields="fields"
           :sort-order="sortOrder"
           :css="css.table"
           pagination-path=""
-          :per-page="5"
+          :per-page="10"
           :append-params="moreParams"
           @vuetable:pagination-data="onPaginationData"
           @vuetable:loading="onLoading"
@@ -53,8 +53,7 @@
       </div>
 
       <div class="d-flex justify-content-between align-items-center">
-        <vuetable-pagination-info ref="paginationInfo"
-        ></vuetable-pagination-info>
+        <vuetable-pagination-info ref="paginationInfo"></vuetable-pagination-info>
         <vuetable-pagination ref="pagination"
           :css="css.pagination"
           @vuetable-pagination:change-page="onChangePage">
@@ -86,6 +85,7 @@ export default {
     return {
       loading: true,
       title: 'SKTM',
+      api_url: '/api/sktm',
       fields: [
         {
           name: '__sequence',
@@ -108,7 +108,7 @@ export default {
         },
         {
           name: 'master_sktm.nama',
-          title: 'SKTM',
+          title: 'Kriteria SKTM',
           sortField: 'master_sktm_id',
           titleClass: 'center aligned',
           sort: false
@@ -121,7 +121,7 @@ export default {
         },
         {
           name: 'nilai',
-          title: 'nilai',
+          title: 'Nilai',
           sortField: 'nilai',
           titleClass: 'center aligned'
         },
@@ -160,6 +160,19 @@ export default {
     }
   },
   methods: {
+    onPaginationData(paginationData) {
+      this.$refs.pagination.setPaginationData(paginationData);
+      this.$refs.paginationInfo.setPaginationData(paginationData);
+    },
+    onChangePage(page) {
+      this.$refs.vuetable.changePage(page);
+    },
+    onLoading: function() {
+      this.loading = true;
+    },
+    onLoaded: function() {
+      this.loading = false;
+    },
     createRow() {
       window.location = '#/admin/sktm/create';
     },
@@ -220,19 +233,6 @@ export default {
           );
         }
       });
-    },
-    onPaginationData(paginationData) {
-      this.$refs.pagination.setPaginationData(paginationData);
-      this.$refs.paginationInfo.setPaginationData(paginationData);
-    },
-    onChangePage(page) {
-      this.$refs.vuetable.changePage(page);
-    },
-    onLoading: function() {
-      this.loading = true;
-    },
-    onLoaded: function() {
-      this.loading = false;
     }
   },
   events: {

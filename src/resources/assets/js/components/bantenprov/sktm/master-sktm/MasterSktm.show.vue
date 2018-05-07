@@ -4,8 +4,14 @@
       <i class="fa fa-table" aria-hidden="true"></i> {{ title }}
 
       <div class="btn-group pull-right" role="group" style="display:flex;">
-        <button class="btn btn-warning btn-sm" role="button" @click="edit">
+        <button class="btn btn-primary btn-sm" role="button" @click="createRow">
+          <i class="fa fa-plus" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-warning btn-sm" role="button" @click="editRow">
           <i class="fa fa-pencil" aria-hidden="true"></i>
+        </button>
+        <button class="btn btn-danger btn-sm" role="button" @click="deleteRow">
+          <i class="fa fa-trash" aria-hidden="true"></i>
         </button>
         <button class="btn btn-primary btn-sm" role="button" @click="back">
           <i class="fa fa-arrow-left" aria-hidden="true"></i>
@@ -15,10 +21,10 @@
 
     <div class="card-body">
       <dl class="row">
-          <dt class="col-4">Nama</dt>
+          <dt class="col-4">Kriteria</dt>
           <dd class="col-8">{{ model.nama }}</dd>
 
-          <dt class="col-4">Kode</dt>
+          <dt class="col-4">Instansi</dt>
           <dd class="col-8">{{ model.instansi }}</dd>
 
           <dt class="col-4">Nilai</dt>
@@ -102,8 +108,63 @@ export default {
       });
   },
   methods: {
-    edit() {
+    createRow() {
+      window.location = '#/admin/master-sktm/create';
+    },
+    editRow() {
       window.location = '#/admin/master-sktm/'+this.$route.params.id+'/edit';
+    },
+    deleteRow() {
+      let app = this;
+
+      swal({
+        title: 'Are you sure?',
+        text: 'You won\'t be able to revert this!',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false,
+        reverseButtons: true
+      }).then((result) => {
+        if (result.value) {
+          axios.delete('/api/master-sktm/'+this.$route.params.id)
+            .then(function(response) {
+              if (response.data.status == true) {
+                app.back();
+
+                swal(
+                  'Deleted',
+                  'Yeah!!! Your data has been deleted.',
+                  'success'
+                );
+              } else {
+                swal(
+                  'Failed',
+                  'Oops... Failed to delete data.',
+                  'error'
+                );
+              }
+            })
+            .catch(function(response) {
+              swal(
+                'Not Found',
+                'Oops... Your page is not found.',
+                'error'
+              );
+            });
+        } else if (result.dismiss === swal.DismissReason.cancel) {
+          swal(
+            'Cancelled',
+            'Your data is safe.',
+            'error'
+          );
+        }
+      });
     },
     back() {
       window.location = '#/admin/master-sktm';
