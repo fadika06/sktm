@@ -89,11 +89,11 @@ class BantenprovSktmSeederMasterSktm extends Seeder
         $row = 1;
         while(($data = fgetcsv($file, 1000, ",")) !== FALSE){
             $all_data[] = [
-                'id' => $data[0],
-                'nama' => $data[1],
-                'instansi' => $data[2],
-                'nilai' => $data[3],
-                'user_id' => $data[4],
+                'id'        => $data[0],
+                'nama'      => $data[1],
+                'instansi'  => $data[2],
+                'nilai'     => $data[3],
+                'user_id'   => $data[4],
             ];
         }
         fclose($file);
