@@ -42,33 +42,32 @@ class BantenprovSktmSeederSktm extends Seeder
         /* silahkan di rubah sesuai kebutuhan */
         foreach($this->readCSV() as $data){
 
-
-        	$this->model->create([
+            $this->model->create([
+            	'id' => $data['id'],
             	'nomor_un' => $data['nomor_un'],
 				'master_sktm_id' => $data['master_sktm_id'],
 				'no_sktm' => $data['no_sktm'],
 				'nilai' => $data['nilai'],
 				'user_id' => $data['user_id'],
+            ]);
 
-        	]);
+            if($this->textInfo){
+                echo "============[DATA]============\n";
+                $this->orangeText('id : ').$this->greenText($data['id']);
+                echo"\n";
+                $this->orangeText('nomor_un : ').$this->greenText($data['nomor_un']);
+                echo"\n";
+                $this->orangeText('master_sktm_id : ').$this->greenText($data['master_sktm_id']);
+                echo"\n";
+                $this->orangeText('no_sktm : ').$this->greenText($data['no_sktm']);
+                echo"\n";
+                $this->orangeText('nilai : ').$this->greenText($data['nilai']);
+                echo"\n";
+                $this->orangeText('user_id : ').$this->greenText($data['user_id']);
+                echo"\n";
+                echo "============[DATA]============\n\n";
+            }
 
-
-        }
-
-        if($this->textInfo){
-            echo "============[DATA]============\n";
-            $this->orangeText('nomor_un : ').$this->greenText($data['nomor_un']);
-			echo"\n";
-			$this->orangeText('master_sktm_id : ').$this->greenText($data['master_sktm_id']);
-			echo"\n";
-			$this->orangeText('no_sktm : ').$this->greenText($data['no_sktm']);
-			echo"\n";
-			$this->orangeText('nilai : ').$this->greenText($data['nilai']);
-			echo"\n";
-			$this->orangeText('user_id : ').$this->greenText($data['user_id']);
-			echo"\n";
-
-            echo "============[DATA]============\n\n";
         }
 
         $this->greenText('[ SEEDER DONE ]');
@@ -92,11 +91,12 @@ class BantenprovSktmSeederSktm extends Seeder
         $row = 1;
         while(($data = fgetcsv($file, 1000, ",")) !== FALSE){
             $all_data[] = [
-                'nomor_un' => $data[0],
-                'master_sktm_id' => $data[1],
-                'no_sktm' => $data[2],
-                'nilai' => $data[3],
-                'user_id' => $data[4],
+                'id' => $data[0],
+                'nomor_un' => $data[1],
+                'master_sktm_id' => $data[2],
+                'no_sktm' => $data[3],
+                'nilai' => $data[4],
+                'user_id' => $data[5],
             ];
         }
         fclose($file);

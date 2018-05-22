@@ -129,36 +129,15 @@ export default {
       .then(response => {
         if (response.data.status == true && response.data.error == false) {
           this.model.user = response.data.current_user;
+            response.data.siswa.forEach(element => {
+            this.siswa.push(element);
+          });
 
           if(response.data.user_special == true){
             this.user = response.data.users;
           }else{
             this.user.push(response.data.users);
           }
-        } else {
-          swal(
-            'Failed',
-            'Oops... '+response.data.message,
-            'error'
-          );
-
-          app.back();
-        }
-      })
-      .catch(function(response) {
-        swal(
-          'Not Found',
-          'Oops... Your page is not found.',
-          'error'
-        );
-
-        app.back();
-      });
-
-    axios.get('api/siswa/get')
-      .then(response => {
-        if (response.data.status == true && response.data.error == false) {
-          this.siswa = response.data.siswas;
         } else {
           swal(
             'Failed',

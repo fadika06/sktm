@@ -70,8 +70,17 @@ $ composer dump-autoload
 
 #### Lakukan seeding :
 
+- Seeding semua seeder
+
 ```bash
 $ php artisan db:seed --class=BantenprovSktmSeeder
+```
+
+- Seeding secara individual
+
+```bash
+$ php artisan db:seed --class=BantenprovSktmSeederMasterSktm
+$ php artisan db:seed --class=BantenprovSktmSeederSktm
 ```
 
 #### Edit menu `resources/assets/js/menu.js`
