@@ -65,7 +65,7 @@ class SktmController extends Controller
             ->header('Access-Control-Allow-Origin', '*')
             ->header('Access-Control-Allow-Methods', 'GET');
         }
-        
+
         if (request()->has('sort')) {
             list($sortCol, $sortDir) = explode('|', request()->sort);
 
@@ -78,7 +78,7 @@ class SktmController extends Controller
             if($this->checkRole(['superadministrator'])){
                 $query = $this->sktm->orderBy('id', 'asc');
             }else{
-                $query = $this->sktm->where('user_id', $admin_sekolah->admin_sekolah_id)->orderBy('id', 'asc');            
+                $query = $this->sktm->where('user_id', $admin_sekolah->admin_sekolah_id)->orderBy('id', 'asc');
             }
         }
 
@@ -220,9 +220,10 @@ class SktmController extends Controller
                     'nomor_un'  => $sktm->nomor_un,
                 ],
                 [
-                    'sktm'      => $sktm->nilai,
-                    'total'     => null,
-                    'user_id'   => $sktm->user_id,
+                    'sktm'          => $sktm->nilai,
+                    'kegiatan_id'   => null,
+                    'total'         => null,
+                    'user_id'       => $sktm->user_id,
                 ]
             );
 
@@ -356,6 +357,7 @@ class SktmController extends Controller
                 ],
                 [
                     'sktm'      => $sktm->nilai,
+                    'kegiatan_id'   => null,
                     'total'     => null,
                     'user_id'   => $sktm->user_id,
                 ]
